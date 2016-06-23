@@ -27,6 +27,12 @@ public class Simulation : MonoBehaviour
 	[Header("Simulation Shaders")]
 	[SerializeField]
 	Shader _addSourceShader;
+	[SerializeField]
+	Shader _updateOutflowFluxShader;
+	[SerializeField]
+	Shader _updateWaterHeightShader;
+	[SerializeField]
+	Shader _updateVelocityFieldShader;
 
 	//
 	// Materials
@@ -36,7 +42,9 @@ public class Simulation : MonoBehaviour
 	//
 	// Textures
 	// ---
-	BufferedRenderTexture _waterSandRock;
+	BufferedRenderTexture _waterSandRock; // R: water, G: sand, B: rock
+	BufferedRenderTexture _outflowFluxRLBT; // outflowflux R: right, G: left, B: bottom, A: top
+	BufferedRenderTexture _velocityXY; //velocity: R: x, G: y
 
 	Texture2D _clearSourceWaterSandRock;
 	Texture2D _sourceWaterSandRock;
@@ -62,7 +70,10 @@ public class Simulation : MonoBehaviour
 		// Create textures
 		var format = RenderTextureFormat.ARGBFloat;
 		var readWrite = RenderTextureReadWrite.Linear;
+		Assert.IsTrue(SystemInfo.SupportsRenderTextureFormat(format), "Rendertexture format not supported: " + format);
 		_waterSandRock = new BufferedRenderTexture(_size, _size, 0, format, readWrite);
+		_outflowFluxRLBT = new BufferedRenderTexture(_size, _size, 0, format, readWrite);
+		_velocityXY = new BufferedRenderTexture(_size, _size, 0, format, readWrite);
 
 		_clearSourceWaterSandRock = TextureUtil.GetBlackTexture(_size, _size, TextureFormat.RGBAFloat);
 		_sourceWaterSandRock = TextureUtil.GetBlackTexture(_size, _size, TextureFormat.RGBAFloat);

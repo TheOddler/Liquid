@@ -1,4 +1,4 @@
-﻿Shader "Hidden/AddSource"
+﻿Shader "Hidden/UpdateOutflowFlux"
 {
 	Properties
 	{
@@ -15,7 +15,7 @@
 			CGPROGRAM
 			#pragma vertex vert_img
 			#pragma fragment frag
-			
+
 			#include "UnityCG.cginc"
 
 			sampler2D _MainTex;
@@ -25,7 +25,7 @@
 			{
 				float4 height = tex2D(_MainTex, i.uv);
 				float4 source = tex2D(_SourceTex, i.uv);
-				
+
 				return height + source;
 			}
 			ENDCG

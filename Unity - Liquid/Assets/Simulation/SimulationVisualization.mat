@@ -136,7 +136,7 @@ Material:
       second: {r: 0, g: 0, b: 0, a: 1}
     - first:
         name: _RockColor
-      second: {r: 0, g: 0, b: 0, a: 1}
+      second: {r: 0.066176474, g: 0.045128867, b: 0.018490488, a: 1}
     - first:
         name: _SandColor
       second: {r: 0.77205884, g: 0.50645804, b: 0.17030707, a: 1}
