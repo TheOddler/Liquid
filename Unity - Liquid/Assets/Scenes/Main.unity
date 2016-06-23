@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4469248, g: 0.49678648, b: 0.5750846, a: 1}
+  m_IndirectSpecularColor: {r: 0.44692492, g: 0.4967869, b: 0.57508546, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -270,11 +270,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _size: 1024
   _updateInterval: 0.1
+  _pipeLength: 0.2
+  _pipeCrossSectionArea: 1
+  _gravityConstant: 9.81
   _initialWaterSandRock: {fileID: 2800000, guid: c4f66dc45a01e4e4e83c4ecbc6863f57,
     type: 3}
   _addingSpeed: 0.5
   _addingBrushSize: 15
   _addSourceShader: {fileID: 4800000, guid: 10bfd4abf6aa2c84ab37880dcb1f23e2, type: 3}
+  _updateOutflowFluxShader: {fileID: 4800000, guid: ab2c081750de0dc40a4f9b70c101dde3,
+    type: 3}
+  _updateWaterHeightShader: {fileID: 0}
+  _updateVelocityFieldShader: {fileID: 0}
 --- !u!4 &1278731425
 Transform:
   m_ObjectHideFlags: 0

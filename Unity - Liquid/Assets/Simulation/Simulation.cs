@@ -14,6 +14,13 @@ public class Simulation : MonoBehaviour
 	float _updateInterval = 0.2f;
 
 	[SerializeField]
+	float _pipeLength = 0.2f;
+	[SerializeField]
+	float _pipeCrossSectionArea = 1.0f;
+	[SerializeField]
+	float _gravityConstant = 9.81f;
+
+	[SerializeField]
 	Texture _initialWaterSandRock;
 
 	[SerializeField]
@@ -38,6 +45,9 @@ public class Simulation : MonoBehaviour
 	// Materials
 	// ---
 	Material _addSourceMaterial;
+	Material _updateOutflowFluxMaterial;
+	Material _updateWaterHeightMaterial;
+	Material _updateVelocityFieldMaterial;
 
 	//
 	// Textures
@@ -54,7 +64,7 @@ public class Simulation : MonoBehaviour
 	// ---
 	float _lastUpdated;
 	Material _visualsMaterial;
-	
+
 	//
 	// Code
 	// ---
@@ -66,6 +76,9 @@ public class Simulation : MonoBehaviour
 
 		// Create materials
 		_addSourceMaterial = new Material(_addSourceShader);
+		_updateOutflowFluxMaterial = new Material(_updateOutflowFluxShader);
+		//_updateWaterHeightMaterial = new Material(_updateWaterHeightShader);
+		//_updateVelocityFieldMaterial = new Material(_updateVelocityFieldShader);
 
 		// Create textures
 		var format = RenderTextureFormat.ARGBFloat;
@@ -122,9 +135,12 @@ public class Simulation : MonoBehaviour
 	{
 		// Do all steps
 		AddSourceStep();
+		UpdateFluxStep();
 
 		// Finalize
 		_waterSandRock.Swap();
+		_outflowFluxRLBT.Swap();
+		_velocityXY.Swap();
 
 		// Update visualization
 		_visualsMaterial.SetTexture("_WaterSandRock", _waterSandRock.Texture);
@@ -132,8 +148,26 @@ public class Simulation : MonoBehaviour
 
 	void AddSourceStep()
 	{
+		// Set values
 		_addSourceMaterial.SetTexture("_SourceTex", _sourceWaterSandRock);
+
+		// Do the step
 		Graphics.Blit(_waterSandRock.Texture, _waterSandRock.Buffer, _addSourceMaterial);
+
+		// Clear source
 		_sourceWaterSandRock.SetPixels32(_clearSourceWaterSandRock.GetPixels32());
+	}
+
+	void UpdateFluxStep()
+	{
+		// Set values
+		_updateOutflowFluxMaterial.SetTexture("_WaterSandRockTex", _waterSandRock.Buffer);
+		_updateOutflowFluxMaterial.SetFloat("_DT", _updateInterval);
+		_updateOutflowFluxMaterial.SetFloat("_L", _pipeLength);
+		_updateOutflowFluxMaterial.SetFloat("_A", _pipeCrossSectionArea);
+		_updateOutflowFluxMaterial.SetFloat("_G", _gravityConstant);
+
+		// Do the step
+		Graphics.Blit(_outflowFluxRLBT.Texture, _outflowFluxRLBT.Buffer, _updateOutflowFluxMaterial);
 	}
 }
