@@ -84,19 +84,17 @@ public class Simulation : MonoBehaviour
 		var format = RenderTextureFormat.ARGBFloat;
 		var readWrite = RenderTextureReadWrite.Linear;
 		Assert.IsTrue(SystemInfo.SupportsRenderTextureFormat(format), "Rendertexture format not supported: " + format);
-		_waterSandRock = new BufferedRenderTexture(_size, _size, 0, format, readWrite);
-		_outflowFluxRLBT = new BufferedRenderTexture(_size, _size, 0, format, readWrite);
-		_velocityXY = new BufferedRenderTexture(_size, _size, 0, format, readWrite);
+		_waterSandRock = new BufferedRenderTexture(_size, _size, 0, format, readWrite, _initialWaterSandRock);
+		_outflowFluxRLBT = new BufferedRenderTexture(_size, _size, 0, format, readWrite, Texture2D.blackTexture);
+		_velocityXY = new BufferedRenderTexture(_size, _size, 0, format, readWrite, Texture2D.blackTexture);
 
 		_clearSourceWaterSandRock = TextureUtil.GetBlackTexture(_size, _size, TextureFormat.RGBAFloat);
 		_sourceWaterSandRock = TextureUtil.GetBlackTexture(_size, _size, TextureFormat.RGBAFloat);
 
-		// Further initialization
-		Graphics.Blit(_initialWaterSandRock, _waterSandRock.Texture);
-
 		// Some other variables
 		_lastUpdated = Time.time;
 		_visualsMaterial = GetComponent<Renderer>().material;
+		UpdateSimulation();
 	}
 	
 	void Update ()
@@ -143,7 +141,8 @@ public class Simulation : MonoBehaviour
 		_velocityXY.Swap();
 
 		// Update visualization
-		_visualsMaterial.SetTexture("_WaterSandRock", _waterSandRock.Texture);
+		_visualsMaterial.SetTexture("_WaterSandRockTex", _waterSandRock.Texture);
+		_visualsMaterial.SetTexture("_FluxTex", _outflowFluxRLBT.Texture);
 	}
 
 	void AddSourceStep()

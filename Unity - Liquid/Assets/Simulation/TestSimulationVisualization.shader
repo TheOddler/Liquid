@@ -1,4 +1,4 @@
-﻿Shader "Custom/SimulationVisualization" {
+﻿Shader "Custom/TestSimulationVisualization" {
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
 		//_MainTex ("Albedo (RGB)", 2D) = "white" {}
@@ -10,6 +10,9 @@
 		_RockColor("Rock Color", Color) = (0,0,0,1)
 
 		_WaterSandRockTex("Water Sand Rock", 2D) = "white" {}
+		_FluxTex("Flux", 2D) = "white" {}
+
+		_DebugPerc("Howmuch should the debug shine through", Range(0,1)) = 0.5
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -28,6 +31,7 @@
 
 		//sampler2D _MainTex;
 		sampler2D _WaterSandRockTex;
+		sampler2D _FluxTex;
 
 		half _Glossiness;
 		half _Metallic;
@@ -38,17 +42,25 @@
 		fixed4 _SandColor;
 		fixed4 _RockColor;
 
+		float _DebugPerc;
+
 		void vert(inout appdata_full v) {
 			fixed4 wsr = tex2Dlod(_WaterSandRockTex, v.texcoord);
 			v.vertex.y += wsr.r + wsr.g + wsr.b;
 		}
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
-			float4 wsr = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex);
 			
 			// Color based on what's on top
-			float4 c = lerp(_RockColor, _SandColor, clamp(wsr.g * 5, 0, 1));
-			c = lerp(c, _WaterColor, clamp(wsr.r * 5, 0, .8));
+			float4 wsr = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex);
+			float4 wsrColor = lerp(_RockColor, _SandColor, clamp(wsr.g * 5, 0, 1));
+			wsrColor = lerp(wsrColor, _WaterColor, clamp(wsr.r * 5, 0, .8));
+
+			// Color based on flux
+			float4 fluxColor = tex2D(_FluxTex, IN.uv_WaterSandRockTex); //assume same uv
+
+			// total color
+			float4 c = lerp(wsrColor, fluxColor, _DebugPerc);
 			o.Albedo = c.rgb;
 			// Metallic and smoothness come from slider variables
 			o.Metallic = _Metallic;

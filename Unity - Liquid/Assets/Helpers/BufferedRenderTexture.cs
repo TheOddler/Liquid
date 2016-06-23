@@ -14,6 +14,13 @@ public struct BufferedRenderTexture
 		_buffer = new RenderTexture(width, height, depth, format, readWrite);
 	}
 
+	public BufferedRenderTexture(int width, int height, int depth, RenderTextureFormat format, RenderTextureReadWrite readWrite, Texture initial)
+		: this(width, height, depth, format, readWrite)
+	{
+		Graphics.Blit(initial, _texture);
+		Graphics.Blit(initial, _buffer);
+	}
+
 	public void Swap()
 	{
 		var temp = _texture;
