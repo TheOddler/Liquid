@@ -12,6 +12,8 @@
 		_WaterSandRockTex("Water Sand Rock", 2D) = "white" {}
 		_FluxTex("Flux", 2D) = "white" {}
 
+		_HeightScale("Height scale", Range(0.1,10)) = 2
+
 		_DebugPerc("Howmuch should the debug shine through", Range(0,1)) = 0.5
 	}
 	SubShader {
@@ -42,11 +44,13 @@
 		fixed4 _SandColor;
 		fixed4 _RockColor;
 
+		float _HeightScale;
+
 		float _DebugPerc;
 
 		void vert(inout appdata_full v) {
 			fixed4 wsr = tex2Dlod(_WaterSandRockTex, v.texcoord);
-			v.vertex.y += wsr.r + wsr.g + wsr.b;
+			v.vertex.y += (wsr.r + wsr.g + wsr.b) * _HeightScale;
 		}
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {

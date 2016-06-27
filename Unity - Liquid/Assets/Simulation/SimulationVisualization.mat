@@ -84,7 +84,7 @@ Material:
     - first:
         name: _WaterSandRockTex
       second:
-        m_Texture: {fileID: 2800000, guid: c4f66dc45a01e4e4e83c4ecbc6863f57, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -115,6 +115,9 @@ Material:
     - first:
         name: _GlossyReflections
       second: 1
+    - first:
+        name: _HeightScale
+      second: 3
     - first:
         name: _Metallic
       second: 0
@@ -151,7 +154,7 @@ Material:
       second: {r: 0, g: 0, b: 0, a: 1}
     - first:
         name: _RockColor
-      second: {r: 0.066176474, g: 0.045128867, b: 0.018490488, a: 1}
+      second: {r: 0.17647058, g: 0.11977091, b: 0.048010383, a: 1}
     - first:
         name: _SandColor
       second: {r: 0.77205884, g: 0.50645804, b: 0.17030707, a: 1}
