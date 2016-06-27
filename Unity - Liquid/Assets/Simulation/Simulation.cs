@@ -77,7 +77,7 @@ public class Simulation : MonoBehaviour
 		// Create materials
 		_addSourceMaterial = new Material(_addSourceShader);
 		_updateOutflowFluxMaterial = new Material(_updateOutflowFluxShader);
-		//_updateWaterHeightMaterial = new Material(_updateWaterHeightShader);
+		_updateWaterHeightMaterial = new Material(_updateWaterHeightShader);
 		//_updateVelocityFieldMaterial = new Material(_updateVelocityFieldShader);
 
 		// Create textures
@@ -93,7 +93,7 @@ public class Simulation : MonoBehaviour
 
 		// Some other variables
 		_lastUpdated = Time.time;
-		_visualsMaterial = GetComponent<Renderer>().material;
+		_visualsMaterial = GetComponentInChildren<Renderer>().sharedMaterial;
 		UpdateSimulation();
 	}
 	
@@ -122,7 +122,7 @@ public class Simulation : MonoBehaviour
 			_sourceWaterSandRock.Apply();
 		}
 
-		if (Time.time >= _lastUpdated + _updateInterval)
+		while (Time.time >= _lastUpdated + _updateInterval)
 		{
 			UpdateSimulation();
 			_lastUpdated = Time.time;
@@ -134,6 +134,7 @@ public class Simulation : MonoBehaviour
 		// Do all steps
 		AddSourceStep();
 		UpdateFluxStep();
+		UpdateHeightStep();
 
 		// Finalize
 		_waterSandRock.Swap();
@@ -152,9 +153,11 @@ public class Simulation : MonoBehaviour
 
 		// Do the step
 		Graphics.Blit(_waterSandRock.Texture, _waterSandRock.Buffer, _addSourceMaterial);
+		_waterSandRock.Swap();
 
 		// Clear source
 		_sourceWaterSandRock.SetPixels32(_clearSourceWaterSandRock.GetPixels32());
+		_sourceWaterSandRock.Apply();
 	}
 
 	void UpdateFluxStep()
@@ -168,5 +171,16 @@ public class Simulation : MonoBehaviour
 
 		// Do the step
 		Graphics.Blit(_outflowFluxRLBT.Texture, _outflowFluxRLBT.Buffer, _updateOutflowFluxMaterial);
+	}
+
+	void UpdateHeightStep()
+	{
+		// Set values
+		_updateWaterHeightMaterial.SetTexture("_OutflowFluxRLBT", _outflowFluxRLBT.Buffer);
+		_updateWaterHeightMaterial.SetFloat("_DT", _updateInterval);
+		_updateWaterHeightMaterial.SetFloat("_L", _pipeLength);
+
+		// Do the step
+		Graphics.Blit(_waterSandRock.Texture, _waterSandRock.Buffer, _updateWaterHeightMaterial);
 	}
 }

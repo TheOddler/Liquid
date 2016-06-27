@@ -54,10 +54,11 @@
 			// Color based on what's on top
 			float4 wsr = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex);
 			float4 wsrColor = lerp(_RockColor, _SandColor, clamp(wsr.g * 5, 0, 1));
-			wsrColor = lerp(wsrColor, _WaterColor, clamp(wsr.r * 5, 0, .8));
+			wsrColor = lerp(wsrColor, _WaterColor, clamp(wsr.r * 2, 0, 1));
 
 			// Color based on flux
-			float4 fluxColor = tex2D(_FluxTex, IN.uv_WaterSandRockTex); //assume same uv
+			float4 flux = tex2D(_FluxTex, IN.uv_WaterSandRockTex); //assume same uv
+			float4 fluxColor = float4(flux.r - flux.g, flux.b - flux.a, 0, 1);
 
 			// total color
 			float4 c = lerp(wsrColor, fluxColor, _DebugPerc);

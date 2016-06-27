@@ -21,6 +21,12 @@ sysinfo.txt
 /*.booproj
 
 #
+# Blender generated
+# ---
+*.blend[0-9]
+*.blend[0-9].meta
+
+#
 # 3rd Party Editor plugins
 # ---
 Assets/[Pp]lugins/[Ee]ditor/[Ss]cript[Ii]nspector3.meta

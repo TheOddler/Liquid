@@ -8,17 +8,21 @@ public struct BufferedRenderTexture
 	RenderTexture _buffer;
 	public RenderTexture Buffer { get { return _buffer; } }
 
-	public BufferedRenderTexture(int width, int height, int depth, RenderTextureFormat format, RenderTextureReadWrite readWrite)
+	public BufferedRenderTexture(int width, int height, int depth, RenderTextureFormat format, RenderTextureReadWrite readWrite, Texture initial = null, TextureWrapMode wrapMode = TextureWrapMode.Repeat, FilterMode filterMode = FilterMode.Bilinear)
 	{
 		_texture = new RenderTexture(width, height, depth, format, readWrite);
-		_buffer = new RenderTexture(width, height, depth, format, readWrite);
-	}
+		_texture.wrapMode = wrapMode;
+		_texture.filterMode = filterMode;
 
-	public BufferedRenderTexture(int width, int height, int depth, RenderTextureFormat format, RenderTextureReadWrite readWrite, Texture initial)
-		: this(width, height, depth, format, readWrite)
-	{
-		Graphics.Blit(initial, _texture);
-		Graphics.Blit(initial, _buffer);
+		_buffer = new RenderTexture(width, height, depth, format, readWrite);
+		_buffer.wrapMode = wrapMode;
+		_buffer.filterMode = filterMode;
+
+		if (initial != null)
+		{
+			Graphics.Blit(initial, _texture);
+			Graphics.Blit(initial, _buffer);
+		}
 	}
 
 	public void Swap()
