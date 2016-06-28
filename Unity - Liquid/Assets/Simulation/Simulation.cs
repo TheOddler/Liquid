@@ -53,8 +53,11 @@ public class Simulation : MonoBehaviour
 	// Textures
 	// ---
 	BufferedRenderTexture _waterSandRock; // R: water, G: sand, B: rock
+	public Texture CurrentWaterSandRock { get { return _waterSandRock.Texture; } }
 	BufferedRenderTexture _outflowFluxRLBT; // outflowflux R: right, G: left, B: bottom, A: top
+	public Texture CurrentOutflowFluxRLBT { get { return _outflowFluxRLBT.Texture; } }
 	BufferedRenderTexture _velocityXY; //velocity: R: x, G: y
+	public Texture CurrentVelocityXY { get { return _velocityXY.Texture; } }
 
 	Texture2D _clearSourceWaterSandRock;
 	Texture2D _sourceWaterSandRock;
@@ -63,7 +66,6 @@ public class Simulation : MonoBehaviour
 	// Other
 	// ---
 	float _lastUpdated;
-	Material _visualsMaterial;
 	Collider _collider;
 
 	//
@@ -93,7 +95,6 @@ public class Simulation : MonoBehaviour
 		_sourceWaterSandRock = TextureUtil.GetBlackTexture(_size, _size, TextureFormat.RGBAFloat);
 
 		// Some other variables
-		_visualsMaterial = GetComponentInChildren<Renderer>().sharedMaterial;
 		_collider = GetComponent<Collider>();
 
 		// Start first simulation step
@@ -149,10 +150,6 @@ public class Simulation : MonoBehaviour
 		_waterSandRock.Swap();
 		_outflowFluxRLBT.Swap();
 		_velocityXY.Swap();
-
-		// Update visualization
-		_visualsMaterial.SetTexture("_WaterSandRockTex", _waterSandRock.Texture);
-		_visualsMaterial.SetTexture("_FluxTex", _outflowFluxRLBT.Texture);
 	}
 
 	void AddSourceStep()

@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: SimulationVisualization
-  m_Shader: {fileID: 4800000, guid: 325d55b065754cb4289cb40711588a58, type: 3}
+  m_Name: SimVisSandRock
+  m_Shader: {fileID: 4800000, guid: fff0f58b6df7f2041970f54a4e1c407c, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
   m_CustomRenderQueue: -1
@@ -84,7 +84,7 @@ Material:
     - first:
         name: _WaterSandRockTex
       second:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: c4f66dc45a01e4e4e83c4ecbc6863f57, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -111,7 +111,7 @@ Material:
       second: 1
     - first:
         name: _Glossiness
-      second: 0
+      second: 0.05
     - first:
         name: _GlossyReflections
       second: 1
@@ -154,7 +154,7 @@ Material:
       second: {r: 0, g: 0, b: 0, a: 1}
     - first:
         name: _RockColor
-      second: {r: 0.17647058, g: 0.11977091, b: 0.048010383, a: 1}
+      second: {r: 0.46323532, g: 0.31133023, b: 0.119214974, a: 1}
     - first:
         name: _SandColor
       second: {r: 0.77205884, g: 0.50645804, b: 0.17030707, a: 1}
