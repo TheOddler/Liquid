@@ -254,7 +254,7 @@ CGINCLUDE
 
 		// ---
 		float4 wsr = tex2D(_WaterSandRockTex, i.uv);
-		baseColor.a *= clamp(wsr.r * wsr.r * 25, 0, 1);
+		baseColor.a *= clamp(wsr.r * 5, 0, 1);
 		// ---
 
 		return baseColor;
@@ -355,7 +355,7 @@ CGINCLUDE
 
 		// ---
 		float4 wsr = tex2D(_WaterSandRockTex, i.uv);
-		baseColor.a *= clamp(wsr.r * wsr.r * 25, 0, 1);
+		baseColor.a *= clamp(wsr.r * 5, 0, 1);
 		// ---
 
 		return baseColor;
@@ -416,7 +416,7 @@ CGINCLUDE
 
 		// ---
 		float4 wsr = tex2D(_WaterSandRockTex, i.uv);
-		baseColor.a *= clamp(wsr.r * wsr.r * 25, 0, 1);
+		baseColor.a *= clamp(wsr.r * 5, 0, 1);
 		// ---
 
 		return baseColor;
