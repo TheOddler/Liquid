@@ -14,7 +14,7 @@ public class CameraRotator : MonoBehaviour
 	{
 		float rot = _autoSpeed;
 
-		rot += Input.GetAxis("Horizontal") * _speed;
+		rot -= Input.GetAxis("Horizontal") * _speed;
 
 		rot *= Time.deltaTime;
 		transform.Rotate(0, rot, 0);
