@@ -100,7 +100,7 @@ CGINCLUDE
 	sampler2D _ShoreTex;
 	sampler2D_float _CameraDepthTexture;
 	//---
-	sampler2D _WaterSandRockTex;
+	sampler2D_float _WaterSandRockTex;
 	//---
 
 	// colors in use

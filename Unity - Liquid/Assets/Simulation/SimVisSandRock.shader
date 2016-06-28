@@ -31,7 +31,7 @@
 		fixed4 _SandColor;
 		fixed4 _RockColor;
 
-		sampler2D _WaterSandRockTex;
+		sampler2D_float _WaterSandRockTex;
 
 		void vert(inout appdata_full v) {
 			fixed4 wsr = tex2Dlod(_WaterSandRockTex, v.texcoord);
