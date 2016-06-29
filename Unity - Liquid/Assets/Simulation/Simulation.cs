@@ -23,14 +23,6 @@ public class Simulation : MonoBehaviour
 	[SerializeField]
 	Texture _initialWaterSandRock;
 
-	[SerializeField]
-	float _addingSpeed = 10f;
-	[SerializeField]
-	int _addingBrushSize = 15;
-
-	[SerializeField]
-	Brush _addingBrush;
-
 	//
 	// Schaders
 	// ---
@@ -66,7 +58,6 @@ public class Simulation : MonoBehaviour
 	// Other
 	// ---
 	float _lastUpdated;
-	Collider _collider;
 
 	//
 	// Code
@@ -91,9 +82,6 @@ public class Simulation : MonoBehaviour
 		_outflowFluxRLBT = new BufferedRenderTexture(_size, _size, 0, format, readWrite, Texture2D.blackTexture);
 		_velocityXY = new BufferedRenderTexture(_size, _size, 0, format, readWrite, Texture2D.blackTexture);
 
-		// Some other variables
-		_collider = GetComponent<Collider>();
-
 		// Start first simulation step
 		_lastUpdated = Time.time;
 		UpdateSimulation();
@@ -101,28 +89,6 @@ public class Simulation : MonoBehaviour
 	
 	void Update ()
 	{
-		bool addWater = Input.GetMouseButton(0);
-		bool addSand = Input.GetMouseButton(1);
-		if (addWater || addSand)
-		{
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hitInfo;
-			if (_collider.Raycast(ray, out hitInfo, float.PositiveInfinity))
-			{
-				int halfSize = _addingBrushSize / 2;
-
-				int x = Mathf.RoundToInt(hitInfo.textureCoord.x * _size);
-				int y = Mathf.RoundToInt(hitInfo.textureCoord.y * _size);
-
-				Vector4 amount = new Vector4(
-					addWater ? _addingSpeed : 0f, // water
-					addSand ? _addingSpeed : 0f, // sand
-					0, 0);
-
-				AddSource(_addingBrush, new Vector2(x, y), amount * Time.deltaTime);
-			}
-		}
-
 		while (Time.time >= _lastUpdated + _updateInterval)
 		{
 			UpdateSimulation();
@@ -132,18 +98,19 @@ public class Simulation : MonoBehaviour
 
 	public void AddSource(Brush brush, Vector2 mid, Vector4 amount)
 	{
-		Debug.Log("Add");
-
 		var currentActiveRT = RenderTexture.active;
 		RenderTexture.active = _waterSandRock.Texture;
 
+		mid *= _size;
 		mid -= brush.Size / 2;
-		//mid.x = _waterSandRock.Texture.width - mid.x;
-		mid.y = _waterSandRock.Texture.height - mid.y;
 		Rect screenRect = new Rect(mid, brush.Size);
 
 		_addSourceBrushMaterial.SetVector("_Scale", Vector4.Scale(amount, brush.Scale));
+
+		GL.PushMatrix();
+		GL.LoadPixelMatrix(0, _size, _size, 0);
 		Graphics.DrawTexture(screenRect, brush.Texture, _addSourceBrushMaterial);
+		GL.PopMatrix();
 
 		RenderTexture.active = currentActiveRT;
 	}
