@@ -3,7 +3,7 @@
 	Properties
 	{
 		_MainTex ("Brush", 2D) = "white" {}
-		_Scale("Scaling factor, include delta time if wanted here", Float) = 1.0
+		_Scale("Scaling factor, include delta time if wanted here", Vector) = (1, 1, 1, 1)
 	}
 	SubShader
 	{
@@ -21,7 +21,7 @@
 			#include "UnityCG.cginc"
 
 			sampler2D _MainTex;
-			float _Scale;
+			float4 _Scale;
 
 			float4 frag(v2f_img i) : SV_Target
 			{

@@ -24,7 +24,7 @@ public class Simulation : MonoBehaviour
 	Texture _initialWaterSandRock;
 
 	[SerializeField]
-	float _addingSpeed = 0.2f;
+	float _addingSpeed = 10f;
 	[SerializeField]
 	int _addingBrushSize = 15;
 
@@ -114,7 +114,12 @@ public class Simulation : MonoBehaviour
 				int x = Mathf.RoundToInt(hitInfo.textureCoord.x * _size);
 				int y = Mathf.RoundToInt(hitInfo.textureCoord.y * _size);
 
-				AddSource(_addingBrush, new Vector2(x, y), Time.deltaTime);
+				Vector4 amount = new Vector4(
+					addWater ? _addingSpeed : 0f, // water
+					addSand ? _addingSpeed : 0f, // sand
+					0, 0);
+
+				AddSource(_addingBrush, new Vector2(x, y), amount * Time.deltaTime);
 			}
 		}
 
@@ -125,8 +130,10 @@ public class Simulation : MonoBehaviour
 		}
 	}
 
-	public void AddSource(Brush brush, Vector2 mid, float scaling)
+	public void AddSource(Brush brush, Vector2 mid, Vector4 amount)
 	{
+		Debug.Log("Add");
+
 		var currentActiveRT = RenderTexture.active;
 		RenderTexture.active = _waterSandRock.Texture;
 
@@ -135,7 +142,7 @@ public class Simulation : MonoBehaviour
 		mid.y = _waterSandRock.Texture.height - mid.y;
 		Rect screenRect = new Rect(mid, brush.Size);
 
-		_addSourceBrushMaterial.SetFloat("_Scale", scaling);
+		_addSourceBrushMaterial.SetVector("_Scale", Vector4.Scale(amount, brush.Scale));
 		Graphics.DrawTexture(screenRect, brush.Texture, _addSourceBrushMaterial);
 
 		RenderTexture.active = currentActiveRT;
