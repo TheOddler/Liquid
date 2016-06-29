@@ -7,6 +7,7 @@
 		_SandColor("Sand Color", Color) = (.3,.7,.35,1)
 		_RockColor("Rock Color", Color) = (0,0,0,1)
 
+		_L("Pipe Length", Float) = 0.2
 		_WaterSandRockTex("Water Sand Rock", 2D) = "white" {}
 	}
 	SubShader {
@@ -31,6 +32,7 @@
 		fixed4 _SandColor;
 		fixed4 _RockColor;
 
+		float _L;
 		sampler2D_float _WaterSandRockTex;
 		float4 _WaterSandRockTex_TexelSize;
 
@@ -51,16 +53,16 @@
 			float4 hB = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex + fixed2(0, _WaterSandRockTex_TexelSize.y));
 			float4 hT = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex - fixed2(0, _WaterSandRockTex_TexelSize.y));
 			float4 hTotal = float4(
-				hR.r + hR.g + hR.b,
-				hL.r + hL.g + hL.b,
-				hB.r + hB.g + hB.b,
-				hT.r + hT.g + hT.b
+				hR.g + hR.b,
+				hL.g + hL.b,
+				hB.g + hB.b,
+				hT.g + hT.b
 				);
 
 			o.Normal = normalize(float3(
 				hTotal.g - hTotal.r,
 				hTotal.a - hTotal.b,
-				1
+				_L
 				));
 
 			// Metallic and smoothness come from slider variables

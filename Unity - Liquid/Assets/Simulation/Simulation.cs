@@ -15,6 +15,7 @@ public class Simulation : MonoBehaviour
 
 	[SerializeField]
 	float _pipeLength = 0.2f;
+	public float PipeLength { get { return _pipeLength; } }
 	[SerializeField]
 	float _pipeCrossSectionArea = 1.0f;
 	[SerializeField]
