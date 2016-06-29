@@ -114,7 +114,7 @@ public class Simulation : MonoBehaviour
 				int x = Mathf.RoundToInt(hitInfo.textureCoord.x * _size);
 				int y = Mathf.RoundToInt(hitInfo.textureCoord.y * _size);
 
-				AddSource(_addingBrush, new Vector2(x, y));
+				AddSource(_addingBrush, new Vector2(x, y), Time.deltaTime);
 			}
 		}
 
@@ -125,7 +125,7 @@ public class Simulation : MonoBehaviour
 		}
 	}
 
-	public void AddSource(Brush brush, Vector2 mid)
+	public void AddSource(Brush brush, Vector2 mid, float scaling)
 	{
 		var currentActiveRT = RenderTexture.active;
 		RenderTexture.active = _waterSandRock.Texture;
@@ -135,7 +135,7 @@ public class Simulation : MonoBehaviour
 		mid.y = _waterSandRock.Texture.height - mid.y;
 		Rect screenRect = new Rect(mid, brush.Size);
 
-		_addSourceBrushMaterial.SetFloat("_Scale", 0.1f);
+		_addSourceBrushMaterial.SetFloat("_Scale", scaling);
 		Graphics.DrawTexture(screenRect, brush.Texture, _addSourceBrushMaterial);
 
 		RenderTexture.active = currentActiveRT;
