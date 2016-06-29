@@ -28,12 +28,15 @@ public class Simulation : MonoBehaviour
 	[SerializeField]
 	int _addingBrushSize = 15;
 
+	[SerializeField]
+	Brush _addingBrush;
+
 	//
 	// Schaders
 	// ---
 	[Header("Simulation Shaders")]
 	[SerializeField]
-	Shader _addSourceShader;
+	Shader _addSourceBrushShader;
 	[SerializeField]
 	Shader _updateOutflowFluxShader;
 	[SerializeField]
@@ -44,7 +47,7 @@ public class Simulation : MonoBehaviour
 	//
 	// Materials
 	// ---
-	Material _addSourceMaterial;
+	Material _addSourceBrushMaterial;
 	Material _updateOutflowFluxMaterial;
 	Material _updateWaterHeightMaterial;
 	Material _updateVelocityFieldMaterial;
@@ -58,9 +61,6 @@ public class Simulation : MonoBehaviour
 	public Texture CurrentOutflowFluxRLBT { get { return _outflowFluxRLBT.Texture; } }
 	BufferedRenderTexture _velocityXY; //velocity: R: x, G: y
 	public Texture CurrentVelocityXY { get { return _velocityXY.Texture; } }
-
-	Texture2D _clearSourceWaterSandRock;
-	Texture2D _sourceWaterSandRock;
 
 	//
 	// Other
@@ -78,7 +78,7 @@ public class Simulation : MonoBehaviour
 		Assert.IsFalse(_initialWaterSandRock == null, "Missing initial water,sand,rock texture."); //IsNotNull doesn't work for some reason
 
 		// Create materials
-		_addSourceMaterial = new Material(_addSourceShader);
+		_addSourceBrushMaterial = new Material(_addSourceBrushShader);
 		_updateOutflowFluxMaterial = new Material(_updateOutflowFluxShader);
 		_updateWaterHeightMaterial = new Material(_updateWaterHeightShader);
 		//_updateVelocityFieldMaterial = new Material(_updateVelocityFieldShader);
@@ -90,9 +90,6 @@ public class Simulation : MonoBehaviour
 		_waterSandRock = new BufferedRenderTexture(_size, _size, 0, format, readWrite, _initialWaterSandRock);
 		_outflowFluxRLBT = new BufferedRenderTexture(_size, _size, 0, format, readWrite, Texture2D.blackTexture);
 		_velocityXY = new BufferedRenderTexture(_size, _size, 0, format, readWrite, Texture2D.blackTexture);
-
-		_clearSourceWaterSandRock = TextureUtil.GetBlackTexture(_size, _size, TextureFormat.RGBAFloat);
-		_sourceWaterSandRock = TextureUtil.GetBlackTexture(_size, _size, TextureFormat.RGBAFloat);
 
 		// Some other variables
 		_collider = GetComponent<Collider>();
@@ -114,21 +111,10 @@ public class Simulation : MonoBehaviour
 			{
 				int halfSize = _addingBrushSize / 2;
 
-				int x = Mathf.RoundToInt(hitInfo.textureCoord.x * _sourceWaterSandRock.width);
-				int y = Mathf.RoundToInt(hitInfo.textureCoord.y * _sourceWaterSandRock.height);
-				x = Mathf.Clamp(x, halfSize, _sourceWaterSandRock.width - halfSize - 1);
-				y = Mathf.Clamp(y, halfSize, _sourceWaterSandRock.height - halfSize - 1);
+				int x = Mathf.RoundToInt(hitInfo.textureCoord.x * _size);
+				int y = Mathf.RoundToInt(hitInfo.textureCoord.y * _size);
 
-				var color = _sourceWaterSandRock.GetPixel(x, y);
-				if (addWater) color.r += _addingSpeed * Time.deltaTime; // water
-				if (addSand) color.g += _addingSpeed * Time.deltaTime; // sand
-																	   //color.b += 0; // rock
-
-				Color32[] colors = new Color32[_addingBrushSize * _addingBrushSize];
-				for (int i = 0; i < colors.Length; ++i)
-					colors[i] = color;
-				_sourceWaterSandRock.SetPixels32(x - halfSize, y - halfSize, _addingBrushSize, _addingBrushSize, colors);
-				_sourceWaterSandRock.Apply();
+				AddSource(_addingBrush, new Vector2(x, y));
 			}
 		}
 
@@ -139,10 +125,25 @@ public class Simulation : MonoBehaviour
 		}
 	}
 
+	public void AddSource(Brush brush, Vector2 mid)
+	{
+		var currentActiveRT = RenderTexture.active;
+		RenderTexture.active = _waterSandRock.Texture;
+
+		mid -= brush.Size / 2;
+		//mid.x = _waterSandRock.Texture.width - mid.x;
+		mid.y = _waterSandRock.Texture.height - mid.y;
+		Rect screenRect = new Rect(mid, brush.Size);
+
+		_addSourceBrushMaterial.SetFloat("_Scale", 0.1f);
+		Graphics.DrawTexture(screenRect, brush.Texture, _addSourceBrushMaterial);
+
+		RenderTexture.active = currentActiveRT;
+	}
+
 	void UpdateSimulation()
 	{
 		// Do all steps
-		AddSourceStep();
 		UpdateFluxStep();
 		UpdateHeightStep();
 
@@ -152,24 +153,10 @@ public class Simulation : MonoBehaviour
 		_velocityXY.Swap();
 	}
 
-	void AddSourceStep()
-	{
-		// Set values
-		_addSourceMaterial.SetTexture("_SourceTex", _sourceWaterSandRock);
-
-		// Do the step
-		Graphics.Blit(_waterSandRock.Texture, _waterSandRock.Buffer, _addSourceMaterial);
-		_waterSandRock.Swap();
-
-		// Clear source
-		_sourceWaterSandRock.SetPixels32(_clearSourceWaterSandRock.GetPixels32());
-		_sourceWaterSandRock.Apply();
-	}
-
 	void UpdateFluxStep()
 	{
 		// Set values
-		_updateOutflowFluxMaterial.SetTexture("_WaterSandRockTex", _waterSandRock.Buffer);
+		_updateOutflowFluxMaterial.SetTexture("_WaterSandRockTex", _waterSandRock.Texture);
 		_updateOutflowFluxMaterial.SetFloat("_DT", _updateInterval);
 		_updateOutflowFluxMaterial.SetFloat("_L", _pipeLength);
 		_updateOutflowFluxMaterial.SetFloat("_A", _pipeCrossSectionArea);
