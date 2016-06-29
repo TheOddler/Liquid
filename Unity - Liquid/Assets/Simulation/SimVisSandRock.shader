@@ -32,10 +32,11 @@
 		fixed4 _RockColor;
 
 		sampler2D_float _WaterSandRockTex;
+		float4 _WaterSandRockTex_TexelSize;
 
 		void vert(inout appdata_full v) {
 			fixed4 wsr = tex2Dlod(_WaterSandRockTex, v.texcoord);
-			v.vertex.y += wsr.g + wsr.b;
+			v.vertex.y = wsr.g + wsr.b;
 		}
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
@@ -43,6 +44,24 @@
 			float4 wsr = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex);
 			float4 c = lerp(_RockColor, _SandColor, clamp(wsr.g * 5, 0, 1));
 			o.Albedo = c.rgb;
+
+			// Normal based on heights
+			float4 hR = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex + fixed2(_WaterSandRockTex_TexelSize.x, 0));
+			float4 hL = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex - fixed2(_WaterSandRockTex_TexelSize.x, 0));
+			float4 hB = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex + fixed2(0, _WaterSandRockTex_TexelSize.y));
+			float4 hT = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex - fixed2(0, _WaterSandRockTex_TexelSize.y));
+			float4 hTotal = float4(
+				hR.r + hR.g + hR.b,
+				hL.r + hL.g + hL.b,
+				hB.r + hB.g + hB.b,
+				hT.r + hT.g + hT.b
+				);
+
+			o.Normal = normalize(float3(
+				hTotal.g - hTotal.r,
+				hTotal.a - hTotal.b,
+				1
+				));
 
 			// Metallic and smoothness come from slider variables
 			o.Metallic = _Metallic;

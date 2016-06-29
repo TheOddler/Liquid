@@ -171,7 +171,7 @@ CGINCLUDE
 
 		// ---
 		fixed4 wsr = tex2Dlod(_WaterSandRockTex, v.texcoord);
-		v.vertex.y += wsr.r + wsr.g + wsr.b;
+		v.vertex.y = wsr.r + wsr.g + wsr.b;
 		// ---
 		
 		// one can also use worldSpaceVertex.xz here (speed!), albeit it'll end up a little skewed
@@ -291,7 +291,7 @@ CGINCLUDE
 
 		// ---
 		fixed4 wsr = tex2Dlod(_WaterSandRockTex, v.texcoord);
-		v.vertex.y += wsr.r + wsr.g + wsr.b;
+		v.vertex.y = wsr.r + wsr.g + wsr.b;
 		// ---
 		
 		// one can also use worldSpaceVertex.xz here (speed!), albeit it'll end up a little skewed
@@ -375,7 +375,7 @@ CGINCLUDE
 
 		// ---
 		fixed4 wsr = tex2Dlod(_WaterSandRockTex, v.texcoord);
-		v.vertex.y += wsr.r + wsr.g + wsr.b;
+		v.vertex.y = wsr.r + wsr.g + wsr.b;
 		// ---
 		
 		half3 worldSpaceVertex = mul(unity_ObjectToWorld, v.vertex).xyz;

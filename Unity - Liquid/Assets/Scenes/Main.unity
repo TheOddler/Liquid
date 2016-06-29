@@ -213,8 +213,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 291421887}
-  m_LocalRotation: {x: -0.14435714, y: 0.022260504, z: 0.0032489055, w: 0.9892699}
-  m_LocalPosition: {x: -5.0125017, y: -43.075504, z: -140.34065}
+  m_LocalRotation: {x: 0.36169857, y: 0.40397516, z: 0.17793971, w: -0.82116735}
+  m_LocalPosition: {x: 57.664368, y: -65.53402, z: -20.90102}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -594,6 +594,10 @@ Prefab:
     - target: {fileID: 114000010737106082, guid: e6eedf5f950741044ae8196f34356cbf,
         type: 2}
       propertyPath: waterQuality
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000012600628334, guid: e6eedf5f950741044ae8196f34356cbf, type: 2}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
