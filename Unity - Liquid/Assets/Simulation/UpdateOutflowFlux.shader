@@ -23,8 +23,8 @@
 
 			#include "UnityCG.cginc"
 
-			sampler2D _MainTex;
-			sampler2D _WaterSandRockTex;
+			sampler2D_float _MainTex;
+			sampler2D_float _WaterSandRockTex;
 			float4 _WaterSandRockTex_TexelSize;
 
 			float _DT;

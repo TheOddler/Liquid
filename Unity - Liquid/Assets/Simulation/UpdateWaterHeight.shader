@@ -21,8 +21,8 @@
 			
 			#include "UnityCG.cginc"
 			
-			sampler2D _MainTex;
-			sampler2D _OutflowFluxRLBT;
+			sampler2D_float _MainTex;
+			sampler2D_float _OutflowFluxRLBT;
 			float4 _OutflowFluxRLBT_TexelSize;
 
 			float _DT;
