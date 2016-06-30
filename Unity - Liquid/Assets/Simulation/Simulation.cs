@@ -8,14 +8,14 @@ public class Simulation : MonoBehaviour
 	// ---
 	[Header("Settings")]
 	[SerializeField]
-	int _size = 1024;
+	int _gridPixelCount = 1024;
 
 	[SerializeField]
-	float _updateInterval = 0.2f;
+	float _updateInterval = 0.2f; // also called deltaTime in the paper, denoted "_DT" in shaders
 
 	[SerializeField]
-	float _pipeLength = 0.2f;
-	public float PipeLength { get { return _pipeLength; } }
+	float _gridPixelSize = 0.1f; // also called pipe-length (l) in the paper, denoted "_L" in shaders
+	public float GridPixelSize { get { return _gridPixelSize; } }
 	[SerializeField]
 	float _pipeCrossSectionArea = 1.0f;
 	[SerializeField]
@@ -79,9 +79,9 @@ public class Simulation : MonoBehaviour
 		var format = RenderTextureFormat.ARGBFloat;
 		var readWrite = RenderTextureReadWrite.Linear;
 		Assert.IsTrue(SystemInfo.SupportsRenderTextureFormat(format), "Rendertexture format not supported: " + format);
-		_waterSandRock = new BufferedRenderTexture(_size, _size, 0, format, readWrite, _initialWaterSandRock);
-		_outflowFluxRLBT = new BufferedRenderTexture(_size, _size, 0, format, readWrite, Texture2D.blackTexture);
-		_velocityXY = new BufferedRenderTexture(_size, _size, 0, format, readWrite, Texture2D.blackTexture);
+		_waterSandRock = new BufferedRenderTexture(_gridPixelCount, _gridPixelCount, 0, format, readWrite, _initialWaterSandRock);
+		_outflowFluxRLBT = new BufferedRenderTexture(_gridPixelCount, _gridPixelCount, 0, format, readWrite, Texture2D.blackTexture);
+		_velocityXY = new BufferedRenderTexture(_gridPixelCount, _gridPixelCount, 0, format, readWrite, Texture2D.blackTexture);
 
 		// Start first simulation step
 		_lastUpdated = Time.time;
@@ -102,14 +102,17 @@ public class Simulation : MonoBehaviour
 		var currentActiveRT = RenderTexture.active;
 		RenderTexture.active = _waterSandRock.Texture;
 
-		mid *= _size;
-		mid -= brush.Size / 2;
-		Rect screenRect = new Rect(mid, brush.Size);
+		var brushSize = brush.SizeAsV2;
+		mid *= _gridPixelCount;
+		mid -= brushSize / 2;
+		Rect screenRect = new Rect(mid, brushSize);
 
-		_addSourceBrushMaterial.SetVector("_Scale", Vector4.Scale(amount, brush.Scale));
+		amount /= _gridPixelSize * _gridPixelSize; // scale for the the size of a cell
+		amount = Vector4.Scale(amount, brush.Scale); // scale so the brush's total volume is 1
+		_addSourceBrushMaterial.SetVector("_Scale", amount);
 
 		GL.PushMatrix();
-		GL.LoadPixelMatrix(0, _size, _size, 0);
+		GL.LoadPixelMatrix(0, _gridPixelCount, _gridPixelCount, 0);
 		Graphics.DrawTexture(screenRect, brush.Texture, _addSourceBrushMaterial);
 		GL.PopMatrix();
 
@@ -133,7 +136,7 @@ public class Simulation : MonoBehaviour
 		// Set values
 		_updateOutflowFluxMaterial.SetTexture("_WaterSandRockTex", _waterSandRock.Texture);
 		_updateOutflowFluxMaterial.SetFloat("_DT", _updateInterval);
-		_updateOutflowFluxMaterial.SetFloat("_L", _pipeLength);
+		_updateOutflowFluxMaterial.SetFloat("_L", _gridPixelSize);
 		_updateOutflowFluxMaterial.SetFloat("_A", _pipeCrossSectionArea);
 		_updateOutflowFluxMaterial.SetFloat("_G", _gravityConstant);
 
@@ -146,7 +149,7 @@ public class Simulation : MonoBehaviour
 		// Set values
 		_updateWaterHeightMaterial.SetTexture("_OutflowFluxRLBT", _outflowFluxRLBT.Buffer);
 		_updateWaterHeightMaterial.SetFloat("_DT", _updateInterval);
-		_updateWaterHeightMaterial.SetFloat("_L", _pipeLength);
+		_updateWaterHeightMaterial.SetFloat("_L", _gridPixelSize);
 
 		// Do the step
 		Graphics.Blit(_waterSandRock.Texture, _waterSandRock.Buffer, _updateWaterHeightMaterial);

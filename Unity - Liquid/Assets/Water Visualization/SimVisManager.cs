@@ -28,6 +28,6 @@ public class SimVisManager : MonoBehaviour
 		_material.SetTexture("_WaterSandRockTex", _sim.CurrentWaterSandRock);
 		_material.SetTexture("_FluxTex", _sim.CurrentOutflowFluxRLBT);
 		_material.SetTexture("_VelocityTex", _sim.CurrentVelocityXY);
-		_material.SetFloat("_L", _sim.PipeLength);
+		_material.SetFloat("_L", _sim.GridPixelSize);
 	}
 }
