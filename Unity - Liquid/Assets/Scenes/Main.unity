@@ -213,8 +213,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 291421887}
-  m_LocalRotation: {x: -0.25277567, y: 0.049952567, z: 0.013103783, w: 0.9661457}
-  m_LocalPosition: {x: -7.532297, y: -43.740337, z: -135.43166}
+  m_LocalRotation: {x: -0.42357975, y: 0.0047036083, z: 0.0022362883, w: 0.90584385}
+  m_LocalPosition: {x: -2.0713122, y: -71.26837, z: -73.2876}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -285,8 +285,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 332469537}
-  m_LocalRotation: {x: 0.10821981, y: 0.84549713, z: 0.18744218, w: -0.48814806}
-  m_LocalPosition: {x: 103.92304, y: -39.86, z: 60.000015}
+  m_LocalRotation: {x: 0.108219825, y: 0.84549713, z: 0.1874422, w: -0.48814806}
+  m_LocalPosition: {x: 90.93266, y: -39.86, z: 52.500015}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -498,7 +498,7 @@ MonoBehaviour:
   _gridPixelSize: 0.1
   _pipeCrossSectionArea: 1
   _gravityConstant: 9.81
-  _initialWaterSandRock: {fileID: 2800000, guid: c4f66dc45a01e4e4e83c4ecbc6863f57,
+  _initialWaterSandRock: {fileID: 2800000, guid: 2edb4ddcdc25d2e4c9e5f733d33b4117,
     type: 3}
   _addSourceBrushShader: {fileID: 4800000, guid: e3da65b9004dc51439e34f9cd477f594,
     type: 3}
@@ -630,7 +630,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d60b5a0793ba4348b4bef5e0718a414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _autoSpeed: 10
+  _autoSpeed: 0
   _speed: 30
 --- !u!4 &1913551347
 Transform:

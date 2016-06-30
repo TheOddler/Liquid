@@ -45,5 +45,18 @@ public class SimulationInteraction : MonoBehaviour
 				_sim.AddSource(_addingBrush, hitPos, amount * Time.deltaTime);
 			}
 		}
+
+		if (Input.GetKeyDown(KeyCode.Space))
+		{
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hitInfo;
+			if (_collider.Raycast(ray, out hitInfo, float.PositiveInfinity))
+			{
+				Vector2 hitPos = hitInfo.textureCoord;
+
+				Vector4 amount = new Vector4(100f, 100f, 0, 0);
+				_sim.AddSource(_addingBrush, hitPos, amount * Time.deltaTime);
+			}
+		}
 	}
 }
