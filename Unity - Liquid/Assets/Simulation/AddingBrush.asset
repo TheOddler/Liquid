@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Name: AddingBrush
   m_EditorClassIdentifier: 
   _texture: {fileID: 2800000, guid: aeb32c26e588c5b4e8e5e852d979db7a, type: 3}
-  _size: 50
+  _size: 64

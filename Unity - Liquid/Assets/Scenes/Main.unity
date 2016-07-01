@@ -285,8 +285,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 332469537}
-  m_LocalRotation: {x: 0.108219825, y: 0.84549713, z: 0.1874422, w: -0.48814806}
-  m_LocalPosition: {x: 90.93266, y: -39.86, z: 52.500015}
+  m_LocalRotation: {x: 0.16657853, y: 0.82632256, z: 0.31611937, w: -0.4353287}
+  m_LocalPosition: {x: 42.99499, y: -44.483, z: 25.8662}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -493,12 +493,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5731f178b19821f4d920c14e89572a7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gridPixelCount: 512
+  _gridPixelCount: 1024
   _updateInterval: 0.005
   _gridPixelSize: 0.1
   _pipeCrossSectionArea: 1
   _gravityConstant: 9.81
-  _initialWaterSandRock: {fileID: 2800000, guid: 2edb4ddcdc25d2e4c9e5f733d33b4117,
+  _initialWaterSandRock: {fileID: 2800000, guid: c4f66dc45a01e4e4e83c4ecbc6863f57,
     type: 3}
   _addSourceBrushShader: {fileID: 4800000, guid: e3da65b9004dc51439e34f9cd477f594,
     type: 3}
@@ -545,7 +545,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59a897aea608c144f933bb5e8b9dbd21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _addingSpeed: 10
+  _addingSpeed: 1000
   _addingBrush: {fileID: 11400000, guid: c2f1b68b2828cd740a1feced9cd16937, type: 2}
 --- !u!4 &1413391602 stripped
 Transform:
@@ -598,6 +598,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1000012600628334, guid: e6eedf5f950741044ae8196f34356cbf, type: 2}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013910323290, guid: e6eedf5f950741044ae8196f34356cbf,
+        type: 2}
+      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
