@@ -61,6 +61,13 @@ public class Simulation : MonoBehaviour
 	float _nextUpdate;
 
 	//
+	// Debug
+	// ---
+	bool debug_showVolumeInfo = false;
+	Texture2D debug_cashedVolumeTex = null; //for faster volume cheking
+	CountingDict<int> debug_stepCounts = new CountingDict<int>();
+
+	//
 	// Code
 	// ---
 	void Start ()
@@ -96,7 +103,7 @@ public class Simulation : MonoBehaviour
 			_nextUpdate += _updateInterval;
 			iter++;
 		}
-		Debug.Log("Hup - " + iter);
+		debug_stepCounts.Increase(iter);
 	}
 
 	public void AddSource(Brush brush, Vector2 mid, Vector4 amount)
@@ -157,28 +164,28 @@ public class Simulation : MonoBehaviour
 		Graphics.Blit(_waterSandRock.Texture, _waterSandRock.Buffer, _updateWaterHeightMaterial);
 	}
 
-	bool debug_showVolumeInfo = false;
-	Texture2D debug_tex = null;
 	void OnGUI()
 	{
-		debug_showVolumeInfo = GUI.Toggle(new Rect(10, Screen.height - 50, 500, 20), debug_showVolumeInfo, "Show volume info?");
-		if (debug_showVolumeInfo)
+		GUI.Label(new Rect(10, Screen.height - 50, 150, 20), "Sim steps per frame:");
+		GUI.Label(new Rect(160, Screen.height - 50, 1000, 20), debug_stepCounts.ToString());
+
+		debug_showVolumeInfo = GUI.Toggle(new Rect(10, Screen.height - 30, 150, 20), debug_showVolumeInfo, "Show volume info?");
+		if (debug_showVolumeInfo && Event.current.type == EventType.Repaint)
 		{
-			// TEMP
-			if (debug_tex == null)
+			if (debug_cashedVolumeTex == null)
 			{
-				debug_tex = new Texture2D(_gridPixelCount, _gridPixelCount, TextureFormat.RGBAFloat, false);
+				debug_cashedVolumeTex = new Texture2D(_gridPixelCount, _gridPixelCount, TextureFormat.RGBAFloat, false);
 			}
 
 			var currentActiveRT = RenderTexture.active;
 			RenderTexture.active = _waterSandRock.Texture;
 
-			debug_tex.ReadPixels(new Rect(0, 0, debug_tex.width, debug_tex.height), 0, 0);
-			debug_tex.Apply();
+			debug_cashedVolumeTex.ReadPixels(new Rect(0, 0, debug_cashedVolumeTex.width, debug_cashedVolumeTex.height), 0, 0);
+			debug_cashedVolumeTex.Apply();
 
 			RenderTexture.active = currentActiveRT;
 
-			var rawColors = debug_tex.GetRawTextureData();
+			var rawColors = debug_cashedVolumeTex.GetRawTextureData();
 			float[] colFloats = new float[rawColors.Length / 4];
 			System.Buffer.BlockCopy(rawColors, 0, colFloats, 0, rawColors.Length);
 
@@ -193,7 +200,10 @@ public class Simulation : MonoBehaviour
 
 			totalmagn *= _gridPixelSize * _gridPixelSize;
 
-			GUI.Label(new Rect(10, Screen.height - 30, 500, 20), "H: " + totalmagn);
+			GUI.Label(new Rect(160, Screen.height - 30, 1000, 20),
+				"Water: " + totalmagn.x.ToString("0") +
+				"   Sand: " + totalmagn.y.ToString("0") +
+				"      -> Calculating this is slow, disable for better performance.");
 		}
 	}
 }
