@@ -13,7 +13,6 @@ public class Brush: ScriptableObject
 	{ 
 		get 
 		{
-			
 			return _inverseTotalMagnitude * ( (float)(_texture.width * _texture.height) / (float)(_size * _size) );
 		}
 	}
@@ -44,8 +43,5 @@ public class Brush: ScriptableObject
 		_inverseTotalMagnitude.y = 1 / totMagn.y;
 		_inverseTotalMagnitude.z = 1 / totMagn.z;
 		_inverseTotalMagnitude.w = 1 / totMagn.w;
-
-
-		Debug.Log("Init: " + totMagn);
 	}
 }
