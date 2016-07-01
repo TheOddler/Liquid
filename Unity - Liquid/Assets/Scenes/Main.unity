@@ -213,8 +213,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 291421887}
-  m_LocalRotation: {x: 0.12555295, y: 0.83344126, z: 0.21137813, w: -0.4949055}
-  m_LocalPosition: {x: 80.63125, y: -46.99461, z: 43.194168}
+  m_LocalRotation: {x: 0.3283297, y: 0.6513619, z: 0.37283227, w: -0.5735185}
+  m_LocalPosition: {x: 66.36066, y: -88.619026, z: 3.0755517}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -285,8 +285,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 332469537}
-  m_LocalRotation: {x: 0.16657855, y: 0.8263226, z: 0.3161194, w: -0.43532872}
-  m_LocalPosition: {x: 42.99499, y: -44.483, z: 25.8662}
+  m_LocalRotation: {x: 0.108219825, y: 0.84549713, z: 0.1874422, w: -0.48814806}
+  m_LocalPosition: {x: 90.93266, y: -39.86, z: 52.500015}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -496,9 +496,9 @@ MonoBehaviour:
   _gridPixelCount: 512
   _updateInterval: 0.005
   _gridPixelSize: 0.1
-  _pipeCrossSectionArea: 1
+  _pipeCrossSectionArea: 0.1
   _gravityConstant: 9.81
-  _initialWaterSandRock: {fileID: 2800000, guid: 2edb4ddcdc25d2e4c9e5f733d33b4117,
+  _initialWaterSandRock: {fileID: 2800000, guid: c4f66dc45a01e4e4e83c4ecbc6863f57,
     type: 3}
   _addSourceBrushShader: {fileID: 4800000, guid: e3da65b9004dc51439e34f9cd477f594,
     type: 3}

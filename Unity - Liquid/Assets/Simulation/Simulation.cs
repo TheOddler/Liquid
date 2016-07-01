@@ -58,7 +58,7 @@ public class Simulation : MonoBehaviour
 	//
 	// Other
 	// ---
-	float _lastUpdated;
+	float _nextUpdate;
 
 	//
 	// Code
@@ -84,17 +84,19 @@ public class Simulation : MonoBehaviour
 		_velocityXY = new BufferedRenderTexture(_gridPixelCount, _gridPixelCount, 0, format, readWrite, Texture2D.blackTexture);
 
 		// Start first simulation step
-		_lastUpdated = Time.time;
-		UpdateSimulation();
+		_nextUpdate = Time.time;
 	}
 	
 	void Update ()
 	{
-		while (Time.time >= _lastUpdated + _updateInterval)
+		int iter = 0;
+		while (Time.time >= _nextUpdate)
 		{
 			UpdateSimulation();
-			_lastUpdated = Time.time;
+			_nextUpdate += _updateInterval;
+			iter++;
 		}
+		Debug.Log("Hup - " + iter);
 	}
 
 	public void AddSource(Brush brush, Vector2 mid, Vector4 amount)
