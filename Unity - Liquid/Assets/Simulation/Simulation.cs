@@ -106,7 +106,8 @@ public class Simulation : MonoBehaviour
 		mid *= _gridPixelCount;
 		mid -= brushSize / 2;
 		Rect screenRect = new Rect(mid, brushSize);
-		
+
+		amount /= _gridPixelSize * _gridPixelSize;
 		amount = Vector4.Scale(amount, brush.Scale); // scale so the brush's total volume is 1
 		_addSourceBrushMaterial.SetVector("_Scale", amount);
 
@@ -154,36 +155,43 @@ public class Simulation : MonoBehaviour
 		Graphics.Blit(_waterSandRock.Texture, _waterSandRock.Buffer, _updateWaterHeightMaterial);
 	}
 
-	/*Texture2D temp_tex;
+	bool debug_showVolumeInfo = false;
+	Texture2D debug_tex = null;
 	void OnGUI()
 	{
-		// TEMP
-		if (temp_tex == null)
+		debug_showVolumeInfo = GUI.Toggle(new Rect(10, Screen.height - 50, 500, 20), debug_showVolumeInfo, "Show volume info?");
+		if (debug_showVolumeInfo)
 		{
-			temp_tex = new Texture2D(_gridPixelCount, _gridPixelCount, TextureFormat.RGBAFloat, false);
+			// TEMP
+			if (debug_tex == null)
+			{
+				debug_tex = new Texture2D(_gridPixelCount, _gridPixelCount, TextureFormat.RGBAFloat, false);
+			}
+
+			var currentActiveRT = RenderTexture.active;
+			RenderTexture.active = _waterSandRock.Texture;
+
+			debug_tex.ReadPixels(new Rect(0, 0, debug_tex.width, debug_tex.height), 0, 0);
+			debug_tex.Apply();
+
+			RenderTexture.active = currentActiveRT;
+
+			var rawColors = debug_tex.GetRawTextureData();
+			float[] colFloats = new float[rawColors.Length / 4];
+			System.Buffer.BlockCopy(rawColors, 0, colFloats, 0, rawColors.Length);
+
+			Vector4 totalmagn = Vector4.zero;
+			for (int i = 0; i < colFloats.Length; i += 4)
+			{
+				totalmagn.x += colFloats[i + 0];
+				totalmagn.y += colFloats[i + 1];
+				totalmagn.z += colFloats[i + 2];
+				totalmagn.w += colFloats[i + 3];
+			}
+
+			totalmagn *= _gridPixelSize * _gridPixelSize;
+
+			GUI.Label(new Rect(10, Screen.height - 30, 500, 20), "H: " + totalmagn);
 		}
-
-		var currentActiveRT = RenderTexture.active;
-		RenderTexture.active = _waterSandRock.Texture;
-
-		temp_tex.ReadPixels(new Rect(0, 0, temp_tex.width, temp_tex.height), 0, 0);
-		temp_tex.Apply();
-
-		RenderTexture.active = currentActiveRT;
-
-		var rawColors = temp_tex.GetRawTextureData();
-		float[] colFloats = new float[rawColors.Length / 4];
-		System.Buffer.BlockCopy(rawColors, 0, colFloats, 0, rawColors.Length);
-
-		Vector4 totalmagn = Vector4.zero;
-		for (int i = 0; i < colFloats.Length; i += 4)
-		{
-			totalmagn.x += colFloats[i + 0];
-			totalmagn.y += colFloats[i + 1];
-			totalmagn.z += colFloats[i + 2];
-			totalmagn.w += colFloats[i + 3];
-		}
-
-		GUI.Label(new Rect(10, Screen.height - 30, 500, 20), "H: " + totalmagn);
-	}*/
+	}
 }

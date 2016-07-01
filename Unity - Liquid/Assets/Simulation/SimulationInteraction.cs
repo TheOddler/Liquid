@@ -54,7 +54,7 @@ public class SimulationInteraction : MonoBehaviour
 			{
 				Vector2 hitPos = hitInfo.textureCoord;
 
-				Vector4 amount = new Vector4(100f, 100f, 0, 0);
+				Vector4 amount = new Vector4(20f, 20f, 0, 0);
 				_sim.AddSource(_addingBrush, hitPos, amount);
 			}
 		}
