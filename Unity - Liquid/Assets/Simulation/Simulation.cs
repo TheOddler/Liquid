@@ -154,7 +154,7 @@ public class Simulation : MonoBehaviour
 		Graphics.Blit(_waterSandRock.Texture, _waterSandRock.Buffer, _updateWaterHeightMaterial);
 	}
 
-	Texture2D temp_tex;
+	/*Texture2D temp_tex;
 	void OnGUI()
 	{
 		// TEMP
@@ -185,5 +185,5 @@ public class Simulation : MonoBehaviour
 		}
 
 		GUI.Label(new Rect(10, Screen.height - 30, 500, 20), "H: " + totalmagn);
-	}
+	}*/
 }
