@@ -106,8 +106,7 @@ public class Simulation : MonoBehaviour
 		mid *= _gridPixelCount;
 		mid -= brushSize / 2;
 		Rect screenRect = new Rect(mid, brushSize);
-
-		amount /= _gridPixelSize * _gridPixelSize; // scale for the the size of a cell
+		
 		amount = Vector4.Scale(amount, brush.Scale); // scale so the brush's total volume is 1
 		_addSourceBrushMaterial.SetVector("_Scale", amount);
 
