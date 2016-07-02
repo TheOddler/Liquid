@@ -213,8 +213,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 291421887}
-  m_LocalRotation: {x: 0.3283297, y: 0.6513619, z: 0.37283227, w: -0.5735185}
-  m_LocalPosition: {x: 66.36066, y: -88.619026, z: 3.0755517}
+  m_LocalRotation: {x: 0.13562077, y: 0.77832276, z: 0.1800913, w: -0.58599305}
+  m_LocalPosition: {x: 77.27411, y: -25.067287, z: 21.778015}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -498,13 +498,14 @@ MonoBehaviour:
   _gridPixelSize: 0.1
   _pipeCrossSectionArea: 0.1
   _gravityConstant: 9.81
+  _sandBlurPerSecond: 10
   _initialWaterSandRock: {fileID: 2800000, guid: c4f66dc45a01e4e4e83c4ecbc6863f57,
     type: 3}
   _addSourceBrushShader: {fileID: 4800000, guid: e3da65b9004dc51439e34f9cd477f594,
     type: 3}
   _updateOutflowFluxShader: {fileID: 4800000, guid: ab2c081750de0dc40a4f9b70c101dde3,
     type: 3}
-  _updateWaterHeightShader: {fileID: 4800000, guid: e7130fdc699ff1748af29233a5f365e4,
+  _updateHeightsShader: {fileID: 4800000, guid: e7130fdc699ff1748af29233a5f365e4,
     type: 3}
   _updateVelocityFieldShader: {fileID: 0}
 --- !u!4 &1278731425

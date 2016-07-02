@@ -22,6 +22,9 @@ public class Simulation : MonoBehaviour
 	float _gravityConstant = 9.81f;
 
 	[SerializeField]
+	float _sandBlurPerSecond = 10.0f;
+
+	[SerializeField]
 	Texture _initialWaterSandRock;
 
 	//
@@ -33,7 +36,7 @@ public class Simulation : MonoBehaviour
 	[SerializeField]
 	Shader _updateOutflowFluxShader;
 	[SerializeField]
-	Shader _updateWaterHeightShader;
+	Shader _updateHeightsShader;
 	[SerializeField]
 	Shader _updateVelocityFieldShader;
 
@@ -42,7 +45,7 @@ public class Simulation : MonoBehaviour
 	// ---
 	Material _addSourceBrushMaterial;
 	Material _updateOutflowFluxMaterial;
-	Material _updateWaterHeightMaterial;
+	Material _updateHeightsMaterial;
 	Material _updateVelocityFieldMaterial;
 
 	//
@@ -79,7 +82,7 @@ public class Simulation : MonoBehaviour
 		// Create materials
 		_addSourceBrushMaterial = new Material(_addSourceBrushShader);
 		_updateOutflowFluxMaterial = new Material(_updateOutflowFluxShader);
-		_updateWaterHeightMaterial = new Material(_updateWaterHeightShader);
+		_updateHeightsMaterial = new Material(_updateHeightsShader);
 		//_updateVelocityFieldMaterial = new Material(_updateVelocityFieldShader);
 
 		// Create textures
@@ -132,7 +135,7 @@ public class Simulation : MonoBehaviour
 	{
 		// Do all steps
 		UpdateFluxStep();
-		UpdateHeightStep();
+		UpdateHeightsStep();
 
 		// Finalize
 		_waterSandRock.Swap();
@@ -153,15 +156,16 @@ public class Simulation : MonoBehaviour
 		Graphics.Blit(_outflowFluxRLBT.Texture, _outflowFluxRLBT.Buffer, _updateOutflowFluxMaterial);
 	}
 
-	void UpdateHeightStep()
+	void UpdateHeightsStep()
 	{
 		// Set values
-		_updateWaterHeightMaterial.SetTexture("_OutflowFluxRLBT", _outflowFluxRLBT.Buffer);
-		_updateWaterHeightMaterial.SetFloat("_DT", _updateInterval);
-		_updateWaterHeightMaterial.SetFloat("_L", _gridPixelSize);
+		_updateHeightsMaterial.SetTexture("_OutflowFluxRLBT", _outflowFluxRLBT.Buffer);
+		_updateHeightsMaterial.SetFloat("_DT", _updateInterval);
+		_updateHeightsMaterial.SetFloat("_L", _gridPixelSize);
+		_updateHeightsMaterial.SetFloat("_SandBlurPerSecond", _sandBlurPerSecond);
 
 		// Do the step
-		Graphics.Blit(_waterSandRock.Texture, _waterSandRock.Buffer, _updateWaterHeightMaterial);
+		Graphics.Blit(_waterSandRock.Texture, _waterSandRock.Buffer, _updateHeightsMaterial);
 	}
 
 	void OnGUI()
