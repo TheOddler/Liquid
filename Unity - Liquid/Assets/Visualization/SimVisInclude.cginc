@@ -43,19 +43,6 @@ inline float4 SampleTop(sampler2D tex, float2 coords, float4 texelSize)
 	return tex2D(tex, coords - fixed2(0, texelSize.y));
 }
 
-inline float3 CalculateNormal(float h, float4 hRLBT, float _L)
-{
-	float heightScale = 1 / _L;
-	//To make it easier we offset the points such that n is "0" height
-	float3 va = { 0, 1, (hRLBT.a - h) * heightScale };
-	float3 vb = { 1, 0, (hRLBT.r - h) * heightScale };
-	float3 vc = { 0, -1, (hRLBT.b - h) * heightScale };
-	float3 vd = { -1, 0, (hRLBT.g - h) * heightScale };
-	//cross products of each vector yields the normal of each tri - return the average normal of all 4 tris
-	float3 average_n = (cross(va, vb) + cross(vb, vc) + cross(vc, vd) + cross(vd, va)) / -4;
-	return normalize(average_n);
-}
-
 inline float3 CalculateNormal(float4 hRLBT, float _L)
 {
 	return normalize(float3(
@@ -78,9 +65,7 @@ float3 CalculateSandNormal(sampler2D wsr, float2 coords, float4 texelSize, float
 		CalculateHeightSand(hT)
 		);
 	
-	float h = CalculateHeightSand(tex2D(wsr, coords));
-	return CalculateNormal(h, hTotal, _L);
-	//return CalculateNormal(hTotal, _L);
+	return CalculateNormal(hTotal, _L);
 }
 
 float3 CalculateWaterNormal(sampler2D wsr, float2 coords, float4 texelSize, float _L)
@@ -96,9 +81,7 @@ float3 CalculateWaterNormal(sampler2D wsr, float2 coords, float4 texelSize, floa
 		CalculateHeightWater(hT)
 		);
 
-	float h = CalculateHeightWater(tex2D(wsr, coords));
-	return CalculateNormal(h, hTotal, _L);
-	//return CalculateNormal(hTotal, _L);
+	return CalculateNormal(hTotal, _L);
 }
 
 #endif
