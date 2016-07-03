@@ -201,8 +201,7 @@ CGINCLUDE
 	{
 		half3 worldNormal = PerPixelNormal(_BumpMap, i.bumpCoords, VERTEX_WORLD_NORMAL, PER_PIXEL_DISPLACE);
 		//---
-		//worldNormal = normalize(worldNormal + CalculateWaterNormal(_WaterSandRockTex, i.uv, _WaterSandRockTex_TexelSize, _L) * 2);
-		worldNormal = normalize(lerp(worldNormal, CalculateWaterNormal(_WaterSandRockTex, i.uv, _WaterSandRockTex_TexelSize, _L), 0.8));
+		worldNormal = normalize(worldNormal + CalculateWaterNormal(_WaterSandRockTex, i.uv, _WaterSandRockTex_TexelSize, _L) * 2);
 		//---
 		half3 viewVector = normalize(i.viewInterpolator.xyz);
 
