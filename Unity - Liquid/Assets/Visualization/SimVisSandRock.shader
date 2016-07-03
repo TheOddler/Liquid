@@ -15,6 +15,8 @@
 		LOD 200
 		
 		CGPROGRAM
+		#include "SimVisInclude.cginc"
+
 		// Physically based Standard lighting model, and enable shadows on all light types
 		#pragma surface surf Standard fullforwardshadows vertex:vert
 
@@ -37,8 +39,7 @@
 		float4 _WaterSandRockTex_TexelSize;
 
 		void vert(inout appdata_full v) {
-			fixed4 wsr = tex2Dlod(_WaterSandRockTex, v.texcoord);
-			v.vertex.y = wsr.g + wsr.b;
+			v.vertex.y = SampleHeightSand(_WaterSandRockTex, v.texcoord);
 		}
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
@@ -48,22 +49,7 @@
 			o.Albedo = c.rgb;
 
 			// Normal based on heights
-			float4 hR = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex + fixed2(_WaterSandRockTex_TexelSize.x, 0));
-			float4 hL = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex - fixed2(_WaterSandRockTex_TexelSize.x, 0));
-			float4 hB = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex + fixed2(0, _WaterSandRockTex_TexelSize.y));
-			float4 hT = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex - fixed2(0, _WaterSandRockTex_TexelSize.y));
-			float4 hTotal = float4(
-				hR.g + hR.b,
-				hL.g + hL.b,
-				hB.g + hB.b,
-				hT.g + hT.b
-				);
-
-			o.Normal = normalize(float3(
-				hTotal.g - hTotal.r,
-				hTotal.a - hTotal.b,
-				_L
-				));
+			o.Normal = CalculateSandNormal(_WaterSandRockTex, IN.uv_WaterSandRockTex, _WaterSandRockTex_TexelSize, _L);
 
 			// Metallic and smoothness come from slider variables
 			o.Metallic = _Metallic;

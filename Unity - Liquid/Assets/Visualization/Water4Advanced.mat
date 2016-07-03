@@ -179,6 +179,9 @@ Material:
         name: _InvFadeFoam
       second: 0.1217
     - first:
+        name: _L
+      second: 0.2
+    - first:
         name: _NormalsDisplacement
       second: 0
     - first:

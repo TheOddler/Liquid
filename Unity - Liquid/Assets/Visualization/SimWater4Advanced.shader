@@ -38,6 +38,7 @@ Properties {
 
 	// My own
 	_WaterSandRockTex("Water Sand Rock", 2D) = "white" {}
+	_L("Pipe Length", Float) = 0.2
 }
 
 
@@ -45,6 +46,7 @@ CGINCLUDE
 
 	#include "UnityCG.cginc"
 	#include "WaterInclude.cginc"
+	#include "SimVisInclude.cginc"
 
 	struct appdata
 	{
@@ -101,6 +103,8 @@ CGINCLUDE
 	sampler2D_float _CameraDepthTexture;
 	//---
 	sampler2D_float _WaterSandRockTex;
+	float4 _WaterSandRockTex_TexelSize;
+	float _L;
 	//---
 
 	// colors in use
@@ -170,8 +174,7 @@ CGINCLUDE
 		v.vertex.xyz += offsets;
 
 		// ---
-		fixed4 wsr = tex2Dlod(_WaterSandRockTex, v.texcoord);
-		v.vertex.y = wsr.r + wsr.g + wsr.b;
+		v.vertex.y = SampleHeightWater(_WaterSandRockTex, v.texcoord);
 		// ---
 		
 		// one can also use worldSpaceVertex.xz here (speed!), albeit it'll end up a little skewed
@@ -197,6 +200,10 @@ CGINCLUDE
 	half4 frag( v2f i ) : SV_Target
 	{
 		half3 worldNormal = PerPixelNormal(_BumpMap, i.bumpCoords, VERTEX_WORLD_NORMAL, PER_PIXEL_DISPLACE);
+		//---
+		//worldNormal = normalize(worldNormal + CalculateWaterNormal(_WaterSandRockTex, i.uv, _WaterSandRockTex_TexelSize, _L) * 2);
+		worldNormal = normalize(lerp(worldNormal, CalculateWaterNormal(_WaterSandRockTex, i.uv, _WaterSandRockTex_TexelSize, _L), 0.8));
+		//---
 		half3 viewVector = normalize(i.viewInterpolator.xyz);
 
 		half4 distortOffset = half4(worldNormal.xz * REALTIME_DISTORTION * 10.0, 0, 0);
@@ -290,8 +297,7 @@ CGINCLUDE
 		v.vertex.xyz += offsets;
 
 		// ---
-		fixed4 wsr = tex2Dlod(_WaterSandRockTex, v.texcoord);
-		v.vertex.y = wsr.r + wsr.g + wsr.b;
+		v.vertex.y = SampleHeightWater(_WaterSandRockTex, v.texcoord);
 		// ---
 		
 		// one can also use worldSpaceVertex.xz here (speed!), albeit it'll end up a little skewed
@@ -314,6 +320,9 @@ CGINCLUDE
 	half4 frag300( v2f_noGrab i ) : SV_Target
 	{
 		half3 worldNormal = PerPixelNormal(_BumpMap, i.bumpCoords, normalize(VERTEX_WORLD_NORMAL), PER_PIXEL_DISPLACE);
+		//---
+		worldNormal = normalize(worldNormal + CalculateWaterNormal(_WaterSandRockTex, i.uv, _WaterSandRockTex_TexelSize, _L) * 2);
+		//---
 
 		half3 viewVector = normalize(i.viewInterpolator.xyz);
 
@@ -374,8 +383,7 @@ CGINCLUDE
 		//---
 
 		// ---
-		fixed4 wsr = tex2Dlod(_WaterSandRockTex, v.texcoord);
-		v.vertex.y = wsr.r + wsr.g + wsr.b;
+		v.vertex.y = SampleHeightWater(_WaterSandRockTex, v.texcoord);
 		// ---
 		
 		half3 worldSpaceVertex = mul(unity_ObjectToWorld, v.vertex).xyz;
@@ -397,6 +405,10 @@ CGINCLUDE
 	half4 frag200( v2f_simple i ) : SV_Target
 	{
 		half3 worldNormal = PerPixelNormal(_BumpMap, i.bumpCoords, half3(0,1,0), PER_PIXEL_DISPLACE);
+		//---
+		worldNormal = normalize(worldNormal + CalculateWaterNormal(_WaterSandRockTex, i.uv, _WaterSandRockTex_TexelSize, _L) * 2);
+		//---
+
 		half3 viewVector = normalize(i.viewInterpolator.xyz);
 
 		half3 reflectVector = normalize(reflect(viewVector, worldNormal));

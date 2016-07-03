@@ -11,10 +11,12 @@ public struct BufferedRenderTexture
 	public BufferedRenderTexture(int width, int height, int depth, RenderTextureFormat format, RenderTextureReadWrite readWrite, Texture initial = null, TextureWrapMode wrapMode = TextureWrapMode.Repeat, FilterMode filterMode = FilterMode.Bilinear)
 	{
 		_texture = new RenderTexture(width, height, depth, format, readWrite);
+		_texture.useMipMap = false;
 		_texture.wrapMode = wrapMode;
 		_texture.filterMode = filterMode;
 
 		_buffer = new RenderTexture(width, height, depth, format, readWrite);
+		_buffer.useMipMap = false;
 		_buffer.wrapMode = wrapMode;
 		_buffer.filterMode = filterMode;
 
