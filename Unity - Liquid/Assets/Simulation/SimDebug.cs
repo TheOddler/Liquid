@@ -19,13 +19,13 @@ public class SimDebug : MonoBehaviour
 	int _currentStepCount;
 	CountingDict<int> _stepCounts = new CountingDict<int>();
 
-	void OnAwake()
-	{
-		_cashedVolumeTex = new Texture2D(_sim.GridPixelCount, _sim.GridPixelCount, TextureFormat.RGBAFloat, false);
-	}
-
 	void OnEnable ()
 	{
+		if (_cashedVolumeTex == null)
+		{
+			_cashedVolumeTex = new Texture2D(_sim.GridPixelCount, _sim.GridPixelCount, TextureFormat.RGBAFloat, false);
+		}
+
 		_sim.OnBeforeSimFrame += OnBeforeSimFrame;
 		_sim.OnSimStep += OnSimStep;
 		_sim.OnAfterSimFrame += OnAfterSimFrame;
