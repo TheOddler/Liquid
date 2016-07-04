@@ -480,6 +480,8 @@ MonoBehaviour:
   _sim: {fileID: 1278731424}
   _addingSpeed: 100
   _addingBrush: {fileID: 11400000, guid: c2f1b68b2828cd740a1feced9cd16937, type: 2}
+  _addSourceBrushShader: {fileID: 4800000, guid: e3da65b9004dc51439e34f9cd477f594,
+    type: 3}
 --- !u!4 &892880165
 Transform:
   m_ObjectHideFlags: 0
@@ -596,8 +598,6 @@ MonoBehaviour:
   _gravityConstant: 9.81
   _sandBlurPerSecond: 10
   _initialWaterSandRock: {fileID: 2800000, guid: c4f66dc45a01e4e4e83c4ecbc6863f57,
-    type: 3}
-  _addSourceBrushShader: {fileID: 4800000, guid: e3da65b9004dc51439e34f9cd477f594,
     type: 3}
   _updateOutflowFluxShader: {fileID: 4800000, guid: ab2c081750de0dc40a4f9b70c101dde3,
     type: 3}

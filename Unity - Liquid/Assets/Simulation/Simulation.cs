@@ -33,8 +33,6 @@ public class Simulation : MonoBehaviour
 	// ---
 	[Header("Simulation Shaders")]
 	[SerializeField]
-	Shader _addSourceBrushShader;
-	[SerializeField]
 	Shader _updateOutflowFluxShader;
 	[SerializeField]
 	Shader _updateHeightsShader;
@@ -44,7 +42,6 @@ public class Simulation : MonoBehaviour
 	//
 	// Materials
 	// ---
-	Material _addSourceBrushMaterial;
 	Material _updateOutflowFluxMaterial;
 	Material _updateHeightsMaterial;
 	Material _updateVelocityFieldMaterial;
@@ -81,7 +78,6 @@ public class Simulation : MonoBehaviour
 		Assert.IsFalse(_initialWaterSandRock == null, "Missing initial water,sand,rock texture."); //IsNotNull doesn't work for some reason
 
 		// Create materials
-		_addSourceBrushMaterial = new Material(_addSourceBrushShader);
 		_updateOutflowFluxMaterial = new Material(_updateOutflowFluxShader);
 		_updateHeightsMaterial = new Material(_updateHeightsShader);
 		//_updateVelocityFieldMaterial = new Material(_updateVelocityFieldShader);
@@ -110,28 +106,6 @@ public class Simulation : MonoBehaviour
 			if (OnSimStep != null) OnSimStep();
 		}
 		if (OnAfterSimFrame != null) OnAfterSimFrame();
-	}
-
-	public void AddSource(Brush brush, Vector2 mid, Vector4 amount)
-	{
-		var currentActiveRT = RenderTexture.active;
-		RenderTexture.active = _waterSandRock.Texture;
-
-		var brushSize = brush.SizeAsV2;
-		mid *= _gridPixelCount;
-		mid -= brushSize / 2;
-		Rect screenRect = new Rect(mid, brushSize);
-
-		amount /= _gridPixelSize * _gridPixelSize;
-		amount = Vector4.Scale(amount, brush.Scale); // scale so the brush's total volume is 1
-		_addSourceBrushMaterial.SetVector("_Scale", amount);
-
-		GL.PushMatrix();
-		GL.LoadPixelMatrix(0, _gridPixelCount, _gridPixelCount, 0);
-		Graphics.DrawTexture(screenRect, brush.Texture, _addSourceBrushMaterial);
-		GL.PopMatrix();
-
-		RenderTexture.active = currentActiveRT;
 	}
 
 	void UpdateSimulation()
