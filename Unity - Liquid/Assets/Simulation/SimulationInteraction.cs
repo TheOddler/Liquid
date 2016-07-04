@@ -23,7 +23,6 @@ public class SimulationInteraction : MonoBehaviour
 
 	void Start()
 	{
-		_sim = GetComponent<Simulation>();
 		_collider = GetComponent<Collider>();
 	}
 
