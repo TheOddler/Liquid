@@ -9,15 +9,16 @@ public class Simulation : MonoBehaviour
 	[Header("Settings")]
 	[SerializeField]
 	int _gridPixelCount = 1024;
+	public int GridPixelCount { get { return _gridPixelCount; } }
 
 	[SerializeField]
-	float _updateInterval = 0.2f; // also called deltaTime in the paper, denoted "_DT" in shaders
+	float _updateInterval = 0.005f; // also called deltaTime in the paper, denoted "_DT" in shaders
 
 	[SerializeField]
 	float _gridPixelSize = 0.1f; // also called pipe-length (l) in the paper, denoted "_L" in shaders
 	public float GridPixelSize { get { return _gridPixelSize; } }
 	[SerializeField]
-	float _pipeCrossSectionArea = 1.0f;
+	float _pipeCrossSectionArea = 0.1f;
 	[SerializeField]
 	float _gravityConstant = 9.81f;
 
@@ -52,11 +53,11 @@ public class Simulation : MonoBehaviour
 	// Textures
 	// ---
 	BufferedRenderTexture _waterSandRock; // R: water, G: sand, B: rock
-	public Texture CurrentWaterSandRock { get { return _waterSandRock.Texture; } }
+	public RenderTexture CurrentWaterSandRock { get { return _waterSandRock.Texture; } }
 	BufferedRenderTexture _outflowFluxRLBT; // outflowflux R: right, G: left, B: bottom, A: top
-	public Texture CurrentOutflowFluxRLBT { get { return _outflowFluxRLBT.Texture; } }
+	public RenderTexture CurrentOutflowFluxRLBT { get { return _outflowFluxRLBT.Texture; } }
 	BufferedRenderTexture _velocityXY; //velocity: R: x, G: y
-	public Texture CurrentVelocityXY { get { return _velocityXY.Texture; } }
+	public RenderTexture CurrentVelocityXY { get { return _velocityXY.Texture; } }
 
 	//
 	// Other
@@ -64,11 +65,11 @@ public class Simulation : MonoBehaviour
 	float _nextUpdate;
 
 	//
-	// Debug
+	// Events
 	// ---
-	bool debug_showVolumeInfo = false;
-	Texture2D debug_cashedVolumeTex = null; //for faster volume cheking
-	CountingDict<int> debug_stepCounts = new CountingDict<int>();
+	public event System.Action OnBeforeSimFrame;
+	public event System.Action OnSimStep;
+	public event System.Action OnAfterSimFrame;
 
 	//
 	// Code
@@ -100,13 +101,15 @@ public class Simulation : MonoBehaviour
 	void Update ()
 	{
 		int iter = 0;
+		if (OnBeforeSimFrame != null) OnBeforeSimFrame();
 		while (Time.time >= _nextUpdate)
 		{
 			UpdateSimulation();
 			_nextUpdate += _updateInterval;
 			iter++;
+			if (OnSimStep != null) OnSimStep();
 		}
-		debug_stepCounts.Increase(iter);
+		if (OnAfterSimFrame != null) OnAfterSimFrame();
 	}
 
 	public void AddSource(Brush brush, Vector2 mid, Vector4 amount)
@@ -166,48 +169,5 @@ public class Simulation : MonoBehaviour
 
 		// Do the step
 		Graphics.Blit(_waterSandRock.Texture, _waterSandRock.Buffer, _updateHeightsMaterial);
-	}
-
-	void OnGUI()
-	{
-		GUI.Label(new Rect(10, Screen.height - 50, 150, 20), "Sim steps per frame:");
-		GUI.Label(new Rect(160, Screen.height - 50, 1000, 20), debug_stepCounts.ToString());
-
-		debug_showVolumeInfo = GUI.Toggle(new Rect(10, Screen.height - 30, 150, 20), debug_showVolumeInfo, "Show volume info?");
-		if (debug_showVolumeInfo && Event.current.type == EventType.Repaint)
-		{
-			if (debug_cashedVolumeTex == null)
-			{
-				debug_cashedVolumeTex = new Texture2D(_gridPixelCount, _gridPixelCount, TextureFormat.RGBAFloat, false);
-			}
-
-			var currentActiveRT = RenderTexture.active;
-			RenderTexture.active = _waterSandRock.Texture;
-
-			debug_cashedVolumeTex.ReadPixels(new Rect(0, 0, debug_cashedVolumeTex.width, debug_cashedVolumeTex.height), 0, 0);
-			debug_cashedVolumeTex.Apply();
-
-			RenderTexture.active = currentActiveRT;
-
-			var rawColors = debug_cashedVolumeTex.GetRawTextureData();
-			float[] colFloats = new float[rawColors.Length / 4];
-			System.Buffer.BlockCopy(rawColors, 0, colFloats, 0, rawColors.Length);
-
-			Vector4 totalmagn = Vector4.zero;
-			for (int i = 0; i < colFloats.Length; i += 4)
-			{
-				totalmagn.x += colFloats[i + 0];
-				totalmagn.y += colFloats[i + 1];
-				totalmagn.z += colFloats[i + 2];
-				totalmagn.w += colFloats[i + 3];
-			}
-
-			totalmagn *= _gridPixelSize * _gridPixelSize;
-
-			GUI.Label(new Rect(160, Screen.height - 30, 1000, 20),
-				"Water: " + totalmagn.x.ToString("0") +
-				"   Sand: " + totalmagn.y.ToString("0") +
-				"      -> Calculating this is slow, disable for better performance.");
-		}
 	}
 }

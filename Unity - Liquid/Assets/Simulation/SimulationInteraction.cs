@@ -1,22 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Simulation))]
+[RequireComponent(typeof(MeshCollider))]
 public class SimulationInteraction : MonoBehaviour
 {
+	[SerializeField]
+	Simulation _sim;
+
 	//
 	// Settings
 	// ---
 	[SerializeField]
-	float _addingSpeed = 1000f;
+	float _addingSpeed = 100f;
 
 	[SerializeField]
 	Brush _addingBrush;
 
 	//
-	// Other
+	// Cache
 	// ---
-	Simulation _sim;
 	Collider _collider;
 
 	void Start()
