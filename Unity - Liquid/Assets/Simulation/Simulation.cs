@@ -49,8 +49,8 @@ public class Simulation : MonoBehaviour
 	//
 	// Textures
 	// ---
-	BufferedRenderTexture _waterSandRock; // R: water, G: sand, B: rock
-	public RenderTexture CurrentWaterSandRock { get { return _waterSandRock.Texture; } }
+	BufferedRenderTexture _waterSandRockSediment; // R: water, G: sand, B: rock, A: sediment
+	public RenderTexture CurrentWaterSandRockSediment { get { return _waterSandRockSediment.Texture; } }
 	BufferedRenderTexture _outflowFluxRLBT; // outflowflux R: right, G: left, B: bottom, A: top
 	public RenderTexture CurrentOutflowFluxRLBT { get { return _outflowFluxRLBT.Texture; } }
 	BufferedRenderTexture _velocityXY; //velocity: R: x, G: y
@@ -80,13 +80,13 @@ public class Simulation : MonoBehaviour
 		// Create materials
 		_updateOutflowFluxMaterial = new Material(_updateOutflowFluxShader);
 		_updateHeightsMaterial = new Material(_updateHeightsShader);
-		//_updateVelocityFieldMaterial = new Material(_updateVelocityFieldShader);
+		_updateVelocityFieldMaterial = new Material(_updateVelocityFieldShader);
 
 		// Create textures
 		var format = RenderTextureFormat.ARGBFloat;
 		var readWrite = RenderTextureReadWrite.Linear;
 		Assert.IsTrue(SystemInfo.SupportsRenderTextureFormat(format), "Rendertexture format not supported: " + format);
-		_waterSandRock = new BufferedRenderTexture(_gridPixelCount, _gridPixelCount, 0, format, readWrite, _initialWaterSandRock);
+		_waterSandRockSediment = new BufferedRenderTexture(_gridPixelCount, _gridPixelCount, 0, format, readWrite, _initialWaterSandRock);
 		_outflowFluxRLBT = new BufferedRenderTexture(_gridPixelCount, _gridPixelCount, 0, format, readWrite, Texture2D.blackTexture);
 		_velocityXY = new BufferedRenderTexture(_gridPixelCount, _gridPixelCount, 0, format, readWrite, Texture2D.blackTexture);
 
@@ -113,9 +113,10 @@ public class Simulation : MonoBehaviour
 		// Do all steps
 		UpdateFluxStep();
 		UpdateHeightsStep();
+		UpdateVelocityXY();
 
 		// Finalize
-		_waterSandRock.Swap();
+		_waterSandRockSediment.Swap();
 		_outflowFluxRLBT.Swap();
 		_velocityXY.Swap();
 	}
@@ -123,7 +124,7 @@ public class Simulation : MonoBehaviour
 	void UpdateFluxStep()
 	{
 		// Set values
-		_updateOutflowFluxMaterial.SetTexture("_WaterSandRockTex", _waterSandRock.Texture);
+		_updateOutflowFluxMaterial.SetTexture("_WaterSandRockSedimentTex", _waterSandRockSediment.Texture);
 		_updateOutflowFluxMaterial.SetFloat("_DT", _updateInterval);
 		_updateOutflowFluxMaterial.SetFloat("_L", _gridPixelSize);
 		_updateOutflowFluxMaterial.SetFloat("_A", _pipeCrossSectionArea);
@@ -142,6 +143,18 @@ public class Simulation : MonoBehaviour
 		_updateHeightsMaterial.SetFloat("_SandBlurPerSecond", _sandBlurPerSecond);
 
 		// Do the step
-		Graphics.Blit(_waterSandRock.Texture, _waterSandRock.Buffer, _updateHeightsMaterial);
+		Graphics.Blit(_waterSandRockSediment.Texture, _waterSandRockSediment.Buffer, _updateHeightsMaterial);
+	}
+
+	void UpdateVelocityXY()
+	{
+		// Set values
+		_updateVelocityFieldMaterial.SetTexture("_OutflowFluxRLBT", _outflowFluxRLBT.Buffer);
+		_updateVelocityFieldMaterial.SetTexture("_WaterSandRockSedimentTex", _waterSandRockSediment.Buffer);
+		_updateVelocityFieldMaterial.SetTexture("_PreviousWaterSandRockSedimentTex", _waterSandRockSediment.Texture);
+		_updateVelocityFieldMaterial.SetFloat("_L", _gridPixelSize);
+
+		// Do the step
+		Graphics.Blit(_velocityXY.Texture, _velocityXY.Buffer, _updateVelocityFieldMaterial);
 	}
 }

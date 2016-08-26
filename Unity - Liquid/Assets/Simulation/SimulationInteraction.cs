@@ -69,7 +69,7 @@ public class SimulationInteraction : MonoBehaviour
 	public void AddSource(Brush brush, Vector2 mid, Vector4 amount)
 	{
 		var currentActiveRT = RenderTexture.active;
-		RenderTexture.active = _sim.CurrentWaterSandRock;
+		RenderTexture.active = _sim.CurrentWaterSandRockSediment;
 
 		var brushSize = brush.SizeAsV2;
 		mid *= _sim.GridPixelCount;

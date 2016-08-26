@@ -25,9 +25,9 @@ public class SimVisManager : MonoBehaviour
 	void Update()
 	{
 		// Update visualization
-		_material.SetTexture("_WaterSandRockTex", _sim.CurrentWaterSandRock);
-		_material.SetTexture("_FluxTex", _sim.CurrentOutflowFluxRLBT);
-		_material.SetTexture("_VelocityTex", _sim.CurrentVelocityXY);
+		_material.SetTexture("_WaterSandRockSediment", _sim.CurrentWaterSandRockSediment);
+		_material.SetTexture("_Flux", _sim.CurrentOutflowFluxRLBT);
+		_material.SetTexture("_VelocityXY", _sim.CurrentVelocityXY);
 		_material.SetFloat("_L", _sim.GridPixelSize);
 	}
 }

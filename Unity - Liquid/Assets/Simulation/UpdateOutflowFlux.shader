@@ -3,7 +3,7 @@
 	Properties
 	{
 		_MainTex("Flux RLBT", 2D) = "white" {} //main assumed to be the current outflow flux field
-		_WaterSandRockTex("Water, Sand, Rock heights", 2D) = "white" {}
+		_WaterSandRockSedimentTex("Water, Sand, Rock, Sediment heights", 2D) = "white" {}
 
 		_DT("Delta Time", Float) = 0.2
 		_L("Pipe Length", Float) = 0.2
@@ -24,8 +24,8 @@
 			#include "UnityCG.cginc"
 
 			sampler2D_float _MainTex;
-			sampler2D_float _WaterSandRockTex;
-			float4 _WaterSandRockTex_TexelSize;
+			sampler2D_float _WaterSandRockSedimentTex;
+			float4 _WaterSandRockSedimentTex_TexelSize;
 
 			float _DT;
 			float _L;
@@ -35,12 +35,12 @@
 			float4 frag(v2f_img i) : SV_Target
 			{
 				float4 flux = tex2D(_MainTex, i.uv);
-				float4 heights = tex2D(_WaterSandRockTex, i.uv);
+				float4 heights = tex2D(_WaterSandRockSedimentTex, i.uv);
 
-				float4 hR = tex2D(_WaterSandRockTex, i.uv + fixed2(_WaterSandRockTex_TexelSize.x, 0));
-				float4 hL = tex2D(_WaterSandRockTex, i.uv - fixed2(_WaterSandRockTex_TexelSize.x, 0));
-				float4 hB = tex2D(_WaterSandRockTex, i.uv + fixed2(0, _WaterSandRockTex_TexelSize.y));
-				float4 hT = tex2D(_WaterSandRockTex, i.uv - fixed2(0, _WaterSandRockTex_TexelSize.y));
+				float4 hR = tex2D(_WaterSandRockSedimentTex, i.uv + fixed2(_WaterSandRockSedimentTex_TexelSize.x, 0));
+				float4 hL = tex2D(_WaterSandRockSedimentTex, i.uv - fixed2(_WaterSandRockSedimentTex_TexelSize.x, 0));
+				float4 hB = tex2D(_WaterSandRockSedimentTex, i.uv + fixed2(0, _WaterSandRockSedimentTex_TexelSize.y));
+				float4 hT = tex2D(_WaterSandRockSedimentTex, i.uv - fixed2(0, _WaterSandRockSedimentTex_TexelSize.y));
 
 				//float otherHeight = heights.g + heights.b; //only sand and rock
 				//float totalHeight = heights.r + heights.g + heights.b; //with water

@@ -55,7 +55,7 @@ public class SimDebug : MonoBehaviour
 
 	void OnGUI()
 	{
-		Assert.IsTrue(_sim.CurrentWaterSandRock.format == RenderTextureFormat.ARGBFloat);
+		Assert.IsTrue(_sim.CurrentWaterSandRockSediment.format == RenderTextureFormat.ARGBFloat);
 
 		GUI.Label(new Rect(10, Screen.height - 50, 150, 20), "Sim steps per frame:");
 		GUI.Label(new Rect(160, Screen.height - 50, 1000, 20), _stepCounts.ToString());
@@ -64,7 +64,7 @@ public class SimDebug : MonoBehaviour
 		if (debug_showVolumeInfo && Event.current.type == EventType.Repaint)
 		{
 			var currentActiveRT = RenderTexture.active;
-			RenderTexture.active = _sim.CurrentWaterSandRock;
+			RenderTexture.active = _sim.CurrentWaterSandRockSediment;
 
 			_cashedVolumeTex.ReadPixels(new Rect(0, 0, _cashedVolumeTex.width, _cashedVolumeTex.height), 0, 0);
 			_cashedVolumeTex.Apply();
@@ -89,6 +89,7 @@ public class SimDebug : MonoBehaviour
 			GUI.Label(new Rect(160, Screen.height - 30, 1000, 20),
 				"Water: " + totalmagn.x.ToString("0") +
 				"   Sand: " + totalmagn.y.ToString("0") +
+				"   SaSe: " + (totalmagn.y + totalmagn.w).ToString("0") +
 				"      -> Calculating this is slow, disable for better performance.");
 		}
 	}

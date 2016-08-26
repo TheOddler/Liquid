@@ -9,10 +9,11 @@
 		_SandColor("Sand Color", Color) = (.3,.7,.35,1)
 		_RockColor("Rock Color", Color) = (0,0,0,1)
 
-		_WaterSandRockTex("Water Sand Rock", 2D) = "white" {}
-		_FluxTex("Flux", 2D) = "white" {}
+		_WaterSandRockSediment("Water Sand Rock Sediment", 2D) = "white" {}
+		_Flux("Flux", 2D) = "white" {}
+		_VelocityXY("Velocity XY", 2D) = "white" {}
 
-		_HeightScale("Height scale", Range(0.1,10)) = 2
+		_HeightScale("Height scale", Range(0.1,10)) = 1
 
 		_DebugPerc("Howmuch should the debug shine through", Range(0,1)) = 0.5
 	}
@@ -28,12 +29,13 @@
 		#pragma target 3.0
 
 		struct Input {
-			float2 uv_WaterSandRockTex;
+			float2 uv_WaterSandRockSediment;
 		};
 
 		//sampler2D _MainTex;
-		sampler2D _WaterSandRockTex;
-		sampler2D _FluxTex;
+		sampler2D _WaterSandRockSediment;
+		sampler2D _Flux;
+		sampler2D _VelocityXY;
 
 		half _Glossiness;
 		half _Metallic;
@@ -49,23 +51,38 @@
 		float _DebugPerc;
 
 		void vert(inout appdata_full v) {
-			fixed4 wsr = tex2Dlod(_WaterSandRockTex, v.texcoord);
+			fixed4 wsr = tex2Dlod(_WaterSandRockSediment, v.texcoord);
 			v.vertex.y += (wsr.r + wsr.g + wsr.b) * _HeightScale;
+		}
+
+
+		float3 angleToHue(float angle) //asumed to be between -pi and pi, as atan2 gives them
+		{
+			angle = (1 + angle / 3.141592) / 2; //map -pi,pi to 0,1
+			float R = abs(angle * 6 - 3) - 1;
+			float G = 2 - abs(angle * 6 - 2);
+			float B = 2 - abs(angle * 6 - 4);
+			return saturate(float3(R, G, B));
 		}
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
 			
 			// Color based on what's on top
-			float4 wsr = tex2D(_WaterSandRockTex, IN.uv_WaterSandRockTex);
+			float4 wsr = tex2D(_WaterSandRockSediment, IN.uv_WaterSandRockSediment);
 			float4 wsrColor = lerp(_RockColor, _SandColor, clamp(wsr.g * 5, 0, 1));
 			wsrColor = lerp(wsrColor, _WaterColor, clamp(wsr.r * 3, 0, 1));
 
 			// Color based on flux
-			float4 flux = tex2D(_FluxTex, IN.uv_WaterSandRockTex); //assume same uv
+			float4 flux = tex2D(_Flux, IN.uv_WaterSandRockSediment); //assume same uv
 			float4 fluxColor = float4(flux.r - flux.g, flux.b - flux.a, 0, 1);
 
+			// Color based on velocity
+			float4 vel = tex2D(_VelocityXY, IN.uv_WaterSandRockSediment);
+			float velDir = atan2(vel.g, vel.r);
+			float4 velColor = float4(angleToHue(velDir), 1);
+
 			// total color
-			float4 c = lerp(wsrColor, fluxColor, _DebugPerc);
+			float4 c = lerp(wsrColor, velColor, _DebugPerc);
 			o.Albedo = c.rgb;
 			// Metallic and smoothness come from slider variables
 			o.Metallic = _Metallic;

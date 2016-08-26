@@ -37,7 +37,7 @@ Properties {
 	_GDirectionCD ("Wave Direction", Vector) = (0.1 ,0.9, 0.5, 0.5)
 
 	// My own
-	_WaterSandRockTex("Water Sand Rock", 2D) = "white" {}
+	_WaterSandRockSediment("Water Sand Rock Sediment", 2D) = "white" {}
 	_L("Pipe Length", Float) = 0.2
 }
 
@@ -102,8 +102,8 @@ CGINCLUDE
 	sampler2D _ShoreTex;
 	sampler2D_float _CameraDepthTexture;
 	//---
-	sampler2D_float _WaterSandRockTex;
-	float4 _WaterSandRockTex_TexelSize;
+	sampler2D_float _WaterSandRockSediment;
+	float4 _WaterSandRockSediment_TexelSize;
 	float _L;
 	//---
 
@@ -174,7 +174,7 @@ CGINCLUDE
 		v.vertex.xyz += offsets;
 
 		// ---
-		v.vertex.y = SampleHeightWater(_WaterSandRockTex, v.texcoord);
+		v.vertex.y = SampleHeightWater(_WaterSandRockSediment, v.texcoord);
 		// ---
 		
 		// one can also use worldSpaceVertex.xz here (speed!), albeit it'll end up a little skewed
@@ -201,7 +201,7 @@ CGINCLUDE
 	{
 		half3 worldNormal = PerPixelNormal(_BumpMap, i.bumpCoords, VERTEX_WORLD_NORMAL, PER_PIXEL_DISPLACE);
 		//---
-		worldNormal = normalize(worldNormal + CalculateWaterNormal(_WaterSandRockTex, i.uv, _WaterSandRockTex_TexelSize, _L) * 2);
+		worldNormal = normalize(worldNormal + CalculateWaterNormal(_WaterSandRockSediment, i.uv, _WaterSandRockSediment_TexelSize, _L) * 2);
 		//---
 		half3 viewVector = normalize(i.viewInterpolator.xyz);
 
@@ -259,7 +259,7 @@ CGINCLUDE
 		UNITY_APPLY_FOG(i.fogCoord, baseColor);
 
 		// ---
-		float4 wsr = tex2D(_WaterSandRockTex, i.uv);
+		float4 wsr = tex2D(_WaterSandRockSediment, i.uv);
 		baseColor.a *= clamp(wsr.r * 5, 0, 1);
 		// ---
 
@@ -296,7 +296,7 @@ CGINCLUDE
 		v.vertex.xyz += offsets;
 
 		// ---
-		v.vertex.y = SampleHeightWater(_WaterSandRockTex, v.texcoord);
+		v.vertex.y = SampleHeightWater(_WaterSandRockSediment, v.texcoord);
 		// ---
 		
 		// one can also use worldSpaceVertex.xz here (speed!), albeit it'll end up a little skewed
@@ -320,7 +320,7 @@ CGINCLUDE
 	{
 		half3 worldNormal = PerPixelNormal(_BumpMap, i.bumpCoords, normalize(VERTEX_WORLD_NORMAL), PER_PIXEL_DISPLACE);
 		//---
-		worldNormal = normalize(worldNormal + CalculateWaterNormal(_WaterSandRockTex, i.uv, _WaterSandRockTex_TexelSize, _L) * 2);
+		worldNormal = normalize(worldNormal + CalculateWaterNormal(_WaterSandRockSediment, i.uv, _WaterSandRockSediment_TexelSize, _L) * 2);
 		//---
 
 		half3 viewVector = normalize(i.viewInterpolator.xyz);
@@ -362,7 +362,7 @@ CGINCLUDE
 		UNITY_APPLY_FOG(i.fogCoord, baseColor);
 
 		// ---
-		float4 wsr = tex2D(_WaterSandRockTex, i.uv);
+		float4 wsr = tex2D(_WaterSandRockSediment, i.uv);
 		baseColor.a *= clamp(wsr.r * 5, 0, 1);
 		// ---
 
@@ -382,7 +382,7 @@ CGINCLUDE
 		//---
 
 		// ---
-		v.vertex.y = SampleHeightWater(_WaterSandRockTex, v.texcoord);
+		v.vertex.y = SampleHeightWater(_WaterSandRockSediment, v.texcoord);
 		// ---
 		
 		half3 worldSpaceVertex = mul(unity_ObjectToWorld, v.vertex).xyz;
@@ -405,7 +405,7 @@ CGINCLUDE
 	{
 		half3 worldNormal = PerPixelNormal(_BumpMap, i.bumpCoords, half3(0,1,0), PER_PIXEL_DISPLACE);
 		//---
-		worldNormal = normalize(worldNormal + CalculateWaterNormal(_WaterSandRockTex, i.uv, _WaterSandRockTex_TexelSize, _L) * 2);
+		worldNormal = normalize(worldNormal + CalculateWaterNormal(_WaterSandRockSediment, i.uv, _WaterSandRockSediment_TexelSize, _L) * 2);
 		//---
 
 		half3 viewVector = normalize(i.viewInterpolator.xyz);
@@ -426,7 +426,7 @@ CGINCLUDE
 		UNITY_APPLY_FOG(i.fogCoord, baseColor);
 
 		// ---
-		float4 wsr = tex2D(_WaterSandRockTex, i.uv);
+		float4 wsr = tex2D(_WaterSandRockSediment, i.uv);
 		baseColor.a *= clamp(wsr.r * 5, 0, 1);
 		// ---
 

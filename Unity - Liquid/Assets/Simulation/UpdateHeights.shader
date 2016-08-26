@@ -2,7 +2,7 @@
 {
 	Properties
 	{
-		_MainTex ("Water, Sand, Rock heights", 2D) = "white" {} // assumed to be the Water, Sand, Rock heights
+		_MainTex ("Water, Sand, Rock, Sediment heights", 2D) = "white" {} // assumed to be the Water, Sand, Rock heights
 		_OutflowFluxRLBT("Flux RLBT", 2D) = "white" {}
 
 		_DT("Delta Time", Float) = 0.2
