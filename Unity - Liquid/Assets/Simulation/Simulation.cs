@@ -6,13 +6,13 @@ public class Simulation : MonoBehaviour
 	//
 	// Settings
 	// ---
-	[Header("Settings")]
+	[Header("Sim Settings")]
 	[SerializeField]
 	int _gridPixelCount = 1024;
 	public int GridPixelCount { get { return _gridPixelCount; } }
 
 	[SerializeField]
-	float _updateInterval = 0.005f; // also called deltaTime in the paper, denoted "_DT" in shaders
+	float _updateInterval = 0.01f; // also called deltaTime in the paper, denoted "_DT" in shaders
 
 	[SerializeField]
 	float _gridPixelSize = 0.1f; // also called pipe-length (l) in the paper, denoted "_L" in shaders
@@ -27,11 +27,12 @@ public class Simulation : MonoBehaviour
 	float _sandBlurPerSecond = 10.0f;
 
 	[Header("Erosion Settings")]
+	[SerializeField]
 	float _sedimentCapacityConstant = 1;
 	[SerializeField]
-	float _dissolvingConstant = 0.2f;
+	float _dissolvingConstant = 0.01f;
 	[SerializeField]
-	float _depositionConstant = 0.1f;
+	float _depositionConstant = 0.01f;
 
 	[Header("Initializaton")]
 	[SerializeField]
@@ -49,6 +50,8 @@ public class Simulation : MonoBehaviour
 	Shader _updateVelocityFieldShader;
 	[SerializeField]
 	Shader _updateErosionDepositionShader;
+	[SerializeField]
+	Shader _updateSedimentTransportationShader;
 
 	//
 	// Materials
@@ -57,6 +60,7 @@ public class Simulation : MonoBehaviour
 	Material _updateHeightsMaterial;
 	Material _updateVelocityFieldMaterial;
 	Material _updateErosionDepositionMaterial;
+	Material _updateSedimentTransportationMaterial;
 
 	//
 	// Textures
@@ -94,6 +98,7 @@ public class Simulation : MonoBehaviour
 		_updateHeightsMaterial = new Material(_updateHeightsShader);
 		_updateVelocityFieldMaterial = new Material(_updateVelocityFieldShader);
 		_updateErosionDepositionMaterial = new Material(_updateErosionDepositionShader);
+		_updateSedimentTransportationMaterial = new Material(_updateSedimentTransportationShader);
 
 		// Create textures
 		var format = RenderTextureFormat.ARGBFloat;
@@ -128,6 +133,7 @@ public class Simulation : MonoBehaviour
 		UpdateHeightsStep();
 		UpdateVelocityXY();
 		UpdateErosionDeposition();
+		UpdateSedimentTransportation();
 	}
 
 	void UpdateFluxStep()
@@ -179,7 +185,7 @@ public class Simulation : MonoBehaviour
 	void UpdateErosionDeposition()
 	{
 		// Set values
-		_updateErosionDepositionMaterial.SetTexture("_VelocityXY", _velocityXY.Buffer);
+		_updateErosionDepositionMaterial.SetTexture("_VelocityXY", _velocityXY.Texture);
 
 		_updateErosionDepositionMaterial.SetFloat("_DT", _updateInterval);
 		_updateErosionDepositionMaterial.SetFloat("_L", _gridPixelSize);
@@ -197,6 +203,14 @@ public class Simulation : MonoBehaviour
 
 	void UpdateSedimentTransportation()
 	{
-		
+		_updateSedimentTransportationMaterial.SetTexture("_VelocityXY", _velocityXY.Texture);
+		_updateSedimentTransportationMaterial.SetFloat("_DT", _updateInterval);
+		_updateSedimentTransportationMaterial.SetFloat("_L", _gridPixelSize);
+
+		// Do the step
+		Graphics.Blit(_waterSandRockSediment.Texture, _waterSandRockSediment.Buffer, _updateSedimentTransportationMaterial);
+
+		// Finalize
+		_waterSandRockSediment.Swap();
 	}
 }
