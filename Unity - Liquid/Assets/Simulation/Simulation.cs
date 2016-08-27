@@ -13,6 +13,7 @@ public class Simulation : MonoBehaviour
 
 	[SerializeField]
 	float _updateInterval = 0.01f; // also called deltaTime in the paper, denoted "_DT" in shaders
+	public float UpdateInterval { get { return _updateInterval; } }
 
 	[SerializeField]
 	float _gridPixelSize = 0.1f; // also called pipe-length (l) in the paper, denoted "_L" in shaders
@@ -29,10 +30,14 @@ public class Simulation : MonoBehaviour
 	[Header("Erosion Settings")]
 	[SerializeField]
 	float _sedimentCapacityConstant = 1;
+	public float SedimentCapacityConstant { get { return _sedimentCapacityConstant; } }
 	[SerializeField]
 	float _dissolvingConstant = 0.01f;
 	[SerializeField]
 	float _depositionConstant = 0.01f;
+	[SerializeField]
+	float _erosionMinimumAngleThresshold = 0.001f;
+	public float ErosionMinimumAngleThresshold { get { return _erosionMinimumAngleThresshold; } }
 
 	[Header("Initializaton")]
 	[SerializeField]
@@ -193,6 +198,7 @@ public class Simulation : MonoBehaviour
 		_updateErosionDepositionMaterial.SetFloat("_Kc", _sedimentCapacityConstant);
 		_updateErosionDepositionMaterial.SetFloat("_Ks", _dissolvingConstant);
 		_updateErosionDepositionMaterial.SetFloat("_Kd", _depositionConstant);
+		_updateErosionDepositionMaterial.SetFloat("_ErosionMinimumAngleThresshold", _erosionMinimumAngleThresshold);
 
 		// Do the step
 		Graphics.Blit(_waterSandRockSediment.Texture, _waterSandRockSediment.Buffer, _updateErosionDepositionMaterial);

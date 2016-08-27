@@ -10,6 +10,8 @@
 		_Kc("Sediment capacity constant", Float) = 0.2
 		_Ks("Dissolving constant", Float) = 0.2
 		_Kd("Deposition constant", Float) = 0.2
+
+		_ErosionMinimumAngleThresshold("Erosion minimum angle thresshold", Float) = 0.001
 	}
 	SubShader
 	{
@@ -34,6 +36,8 @@
 			float _Ks;
 			float _Kd;
 
+			float _ErosionMinimumAngleThresshold;
+
 			float4 frag (v2f_img i) : SV_Target
 			{
 				float4 heights = tex2D(_MainTex, i.uv);
@@ -49,10 +53,10 @@
 				// 3.3 Erosion and Deposition
 				// ---
 				// calculations for tilt with help from: http://math.stackexchange.com/questions/1044044/local-tilt-angle-based-on-height-field#1044080
-				float dhx = (hR.g + hR.b - hL.g - hL.b) / (2 * _L); 
+				float dhx = (hR.g + hR.b - hL.g - hL.b) / (2 * _L);
 				float dhy = (hB.g + hB.b - hT.g - hT.b) / (2 * _L);
-				float sinAlpha = sqrt(1 - 1 / (1 + dhx * dhx + dhy * dhy));
-				float C = _Kc * _L * _L * sinAlpha * sqrt(velocity.r * velocity.r + velocity.g * velocity.g); //transport capacity
+				float sinAlpha = max(_ErosionMinimumAngleThresshold, sqrt(1 - 1 / (1 + dhx * dhx + dhy * dhy)));
+				float C = _Kc * sinAlpha * sqrt(velocity.r * velocity.r + velocity.g * velocity.g) * _L * _L * heights.r; //transport capacity
 
 				if (C > heights.a) { //more capacity than sediment = erode
 					float erode = min(C - heights.a, _Ks * (C - heights.a));

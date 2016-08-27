@@ -46,6 +46,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
+        name: _Flux
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
         name: _FluxTex
       second:
         m_Texture: {fileID: 0}
@@ -118,6 +124,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
+        name: _VelocityXY
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
         name: _VelocityXYTex
       second:
         m_Texture: {fileID: 0}
@@ -170,6 +182,9 @@ Material:
         name: _Ambient
       second: 1
     - first:
+        name: _DT
+      second: 0.2
+    - first:
         name: _DebugPerc
       second: 1
     - first:
@@ -178,6 +193,9 @@ Material:
     - first:
         name: _DisplacementTiling
       second: 18.586807
+    - first:
+        name: _ErosionMinimumAngleThresshold
+      second: 0.001
     - first:
         name: _FadeExp
       second: 0.91503274
@@ -211,6 +229,9 @@ Material:
     - first:
         name: _InvFadeFoam
       second: 0.1217
+    - first:
+        name: _Kc
+      second: 0.2
     - first:
         name: _L
       second: 0.2
@@ -356,6 +377,9 @@ Material:
     - first:
         name: _SandColor
       second: {r: 0.3, g: 0.7, b: 0.35, a: 1}
+    - first:
+        name: _SedimentColor
+      second: {r: 1, g: 0, b: 0, a: 1}
     - first:
         name: _ShoreColor
       second: {r: 1, g: 1, b: 1, a: 1}
