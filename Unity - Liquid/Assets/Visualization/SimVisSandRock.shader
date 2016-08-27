@@ -8,7 +8,7 @@
 		_RockColor("Rock Color", Color) = (0,0,0,1)
 
 		_L("Pipe Length", Float) = 0.2
-		_WaterSandRockSedimentTex("Water Sand Rock Sediment", 2D) = "white" {}
+		_WaterSandRockSediment("Water Sand Rock Sediment", 2D) = "white" {}
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -24,7 +24,7 @@
 		#pragma target 3.0
 
 		struct Input {
-			float2 uv_WaterSandRockSedimentTex;
+			float2 uv_WaterSandRockSediment;
 		};
 
 		fixed4 _Color;
@@ -35,21 +35,21 @@
 		fixed4 _RockColor;
 
 		float _L;
-		sampler2D_float _WaterSandRockSedimentTex;
-		float4 _WaterSandRockSedimentTex_TexelSize;
+		sampler2D_float _WaterSandRockSediment;
+		float4 _WaterSandRockSediment_TexelSize;
 
 		void vert(inout appdata_full v) {
-			v.vertex.y = SampleHeightSand(_WaterSandRockSedimentTex, v.texcoord);
+			v.vertex.y = SampleHeightSand(_WaterSandRockSediment, v.texcoord);
 		}
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
 			// Color based on what's on top
-			float4 wsr = tex2D(_WaterSandRockSedimentTex, IN.uv_WaterSandRockSedimentTex);
+			float4 wsr = tex2D(_WaterSandRockSediment, IN.uv_WaterSandRockSediment);
 			float4 c = lerp(_RockColor, _SandColor, clamp(wsr.g * 5, 0, 1));
 			o.Albedo = c.rgb;
 
 			// Normal based on heights
-			o.Normal = CalculateSandNormal(_WaterSandRockSedimentTex, IN.uv_WaterSandRockSedimentTex, _WaterSandRockSedimentTex_TexelSize, _L);
+			o.Normal = CalculateSandNormal(_WaterSandRockSediment, IN.uv_WaterSandRockSediment, _WaterSandRockSediment_TexelSize, _L);
 
 			// Metallic and smoothness come from slider variables
 			o.Metallic = _Metallic;
