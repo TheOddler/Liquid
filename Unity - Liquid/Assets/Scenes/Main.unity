@@ -217,8 +217,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 291421887}
-  m_LocalRotation: {x: 0.42682225, y: -0.315423, z: -0.16174176, w: -0.83196795}
-  m_LocalPosition: {x: -6.5377, y: -8.665744, z: -7.439059}
+  m_LocalRotation: {x: 0.3783471, y: -0.28580275, z: -0.123980634, w: -0.8716645}
+  m_LocalPosition: {x: -12.028539, y: -19.499788, z: -15.128398}
   m_LocalScale: {x: 0.049999997, y: 0.05, z: 0.05}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -483,7 +483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sim: {fileID: 1278731424}
-  _addingSpeed: 50
+  _addingSpeed: 25
   _addingBrush: {fileID: 11400000, guid: c2f1b68b2828cd740a1feced9cd16937, type: 2}
   _addSourceBrushShader: {fileID: 4800000, guid: e3da65b9004dc51439e34f9cd477f594,
     type: 3}
@@ -601,13 +601,12 @@ MonoBehaviour:
   _gridPixelSize: 0.1
   _pipeCrossSectionArea: 0.1
   _gravityConstant: 9.81
-  _sandBlurPerSecond: 0.1
+  _sandBlurPerSecond: 0.05
   _sedimentCapacityConstant: 1
   _dissolvingConstant: 0.01
   _depositionConstant: 0.005
   _erosionMinimumAngleThresshold: 0.02
-  _initialWaterSandRock: {fileID: 2800000, guid: c4f66dc45a01e4e4e83c4ecbc6863f57,
-    type: 3}
+  _initialHeights: {fileID: 2100000, guid: ad549bb2586c9214a90a5f0f4fd48e14, type: 2}
   _updateOutflowFluxShader: {fileID: 4800000, guid: ab2c081750de0dc40a4f9b70c101dde3,
     type: 3}
   _updateHeightsShader: {fileID: 4800000, guid: e7130fdc699ff1748af29233a5f365e4,
@@ -714,7 +713,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d60b5a0793ba4348b4bef5e0718a414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _autoSpeed: 15
+  _autoSpeed: 0
   _speed: 30
 --- !u!4 &1913551347
 Transform:

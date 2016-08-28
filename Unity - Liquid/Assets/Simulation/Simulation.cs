@@ -41,7 +41,7 @@ public class Simulation : MonoBehaviour
 
 	[Header("Initializaton")]
 	[SerializeField]
-	Texture _initialWaterSandRock;
+	Material _initialHeights;
 
 	//
 	// Schaders
@@ -96,7 +96,7 @@ public class Simulation : MonoBehaviour
 	{
 		// Some assurances
 		Assert.raiseExceptions = true;
-		Assert.IsFalse(_initialWaterSandRock == null, "Missing initial water,sand,rock texture."); //IsNotNull doesn't work for some reason
+		Assert.IsFalse(_initialHeights == null, "Missing initial heights material."); //IsNotNull doesn't work for some reason
 
 		// Create materials
 		_updateOutflowFluxMaterial = new Material(_updateOutflowFluxShader);
@@ -109,7 +109,7 @@ public class Simulation : MonoBehaviour
 		var format = RenderTextureFormat.ARGBFloat;
 		var readWrite = RenderTextureReadWrite.Linear;
 		Assert.IsTrue(SystemInfo.SupportsRenderTextureFormat(format), "Rendertexture format not supported: " + format);
-		_waterSandRockSediment = new BufferedRenderTexture(_gridPixelCount, _gridPixelCount, 0, format, readWrite, _initialWaterSandRock);
+		_waterSandRockSediment = new BufferedRenderTexture(_gridPixelCount, _gridPixelCount, 0, format, readWrite, _initialHeights);
 		_outflowFluxRLBT = new BufferedRenderTexture(_gridPixelCount, _gridPixelCount, 0, format, readWrite, Texture2D.blackTexture);
 		_velocityXY = new BufferedRenderTexture(_gridPixelCount, _gridPixelCount, 0, format, readWrite, Texture2D.blackTexture);
 

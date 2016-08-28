@@ -23,12 +23,16 @@ public class SimulationInteraction : MonoBehaviour
 	// Cache
 	// ---
 	Material _addSourceBrushMaterial;
-	Collider _collider;
+	MeshCollider _collider;
+	Texture2D _cashedHeightsTex = null;
 
 	void Start()
 	{
 		_addSourceBrushMaterial = new Material(_addSourceBrushShader);
-		_collider = GetComponent<Collider>();
+		_collider = GetComponent<MeshCollider>();
+		
+		_cashedHeightsTex = new Texture2D(_sim.GridPixelCount, _sim.GridPixelCount, TextureFormat.RGBAFloat, false); //smaller?
+		StartCoroutine(UpdateCollider());
 	}
 
 	void Update()
@@ -86,5 +90,65 @@ public class SimulationInteraction : MonoBehaviour
 		GL.PopMatrix();
 
 		RenderTexture.active = currentActiveRT;
+	}
+
+	IEnumerator UpdateCollider()
+	{
+		yield return new WaitForSeconds(1);
+
+		while (true)
+		{
+			// Get height data
+			var currentActiveRT = RenderTexture.active;
+			RenderTexture.active = _sim.CurrentWaterSandRockSediment;
+
+			_cashedHeightsTex.ReadPixels(new Rect(0, 0, _cashedHeightsTex.width, _cashedHeightsTex.height), 0, 0);
+			_cashedHeightsTex.Apply();
+
+			RenderTexture.active = currentActiveRT;
+
+			yield return new WaitForSeconds(1);
+
+			var rawColors = _cashedHeightsTex.GetRawTextureData();
+			float[] colFloats = new float[rawColors.Length / 4];
+			System.Buffer.BlockCopy(rawColors, 0, colFloats, 0, rawColors.Length);
+
+			/*Vector4 totalmagn = Vector4.zero;
+			for (int i = 0; i < colFloats.Length; i += 4)
+			{
+				totalmagn.x += colFloats[i + 0];
+				totalmagn.y += colFloats[i + 1];
+				totalmagn.z += colFloats[i + 2];
+				totalmagn.w += colFloats[i + 3];
+			}*/
+
+			yield return new WaitForSeconds(1);
+
+			// Get mesh data
+			Mesh mesh = _collider.sharedMesh;
+			Vector3[] verts = mesh.vertices;
+			Vector2[] uvs = mesh.uv;
+
+			// Update the collider
+			for (int i = 0; i < verts.Length; ++i)
+			{
+				Vector2 uv = uvs[i];
+				Vector3 vert = verts[i];
+
+				int x = Mathf.RoundToInt(uv.x * _sim.GridPixelCount);
+				x = Mathf.Clamp(x, 0, _sim.GridPixelCount - 1);
+				int y = Mathf.RoundToInt((1 - uv.y) * _sim.GridPixelCount);
+				y = Mathf.Clamp(y, 0, _sim.GridPixelCount - 1);
+
+				int infoPos = x * 4 + y * 4 * _sim.GridPixelCount;
+				vert.y = colFloats[infoPos + 1]; //+1 voor sand
+
+				verts[i] = vert;
+			}
+			mesh.vertices = verts;
+			_collider.sharedMesh = mesh;
+
+			yield return new WaitForSeconds(1);
+		}
 	}
 }
