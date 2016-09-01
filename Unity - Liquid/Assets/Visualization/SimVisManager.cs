@@ -35,4 +35,9 @@ public class SimVisManager : MonoBehaviour
 		_material.SetFloat("_Kc", _sim.SedimentCapacityConstant);
 		_material.SetFloat("_ErosionMinimumAngleThresshold", _sim.ErosionMinimumAngleThresshold);
 	}
+
+	public void UpdateIndicator(Vector2 pos)
+	{
+		_material.SetVector("_Indicator", new Vector4(pos.x, pos.y, 0, 0));
+	}
 }

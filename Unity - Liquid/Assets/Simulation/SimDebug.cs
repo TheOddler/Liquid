@@ -71,7 +71,7 @@ public class SimDebug : MonoBehaviour
 
 			RenderTexture.active = currentActiveRT;
 
-			var rawColors = _cashedVolumeTex.GetRawTextureData();
+			/*var rawColors = _cashedVolumeTex.GetRawTextureData();
 			float[] colFloats = new float[rawColors.Length / 4];
 			System.Buffer.BlockCopy(rawColors, 0, colFloats, 0, rawColors.Length);
 
@@ -82,9 +82,20 @@ public class SimDebug : MonoBehaviour
 				totalmagn.y += colFloats[i + 1];
 				totalmagn.z += colFloats[i + 2];
 				totalmagn.w += colFloats[i + 3];
+			}*/
+
+			var cols = _cashedVolumeTex.GetPixels();
+
+			Vector4 totalmagn = Vector4.zero;
+			for (int i = 0; i < cols.Length; i += 4)
+			{
+				totalmagn.x += cols[i + 0].r;
+				totalmagn.y += cols[i + 1].g;
+				totalmagn.z += cols[i + 2].b;
+				totalmagn.w += cols[i + 3].a;
 			}
 
-			totalmagn *= _sim.GridPixelSize * _sim.GridPixelSize;
+		   totalmagn *= _sim.GridPixelSize * _sim.GridPixelSize;
 
 			GUI.Label(new Rect(160, Screen.height - 30, 1000, 20),
 				"Water: " + totalmagn.x.ToString("0") +

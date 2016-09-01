@@ -9,6 +9,10 @@
 
 		_L("Pipe Length", Float) = 0.2
 		_WaterSandRockSediment("Water Sand Rock Sediment", 2D) = "white" {}
+
+		_Indicator("Mouse indicator", Vector) = (0,0,0,0)
+		_IndicatorColor("Indicator color", Color) = (1,0,0,1)
+		_IndicatorSize("Indicator size", Range(0,1)) = 0.05
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -38,6 +42,10 @@
 		sampler2D_float _WaterSandRockSediment;
 		float4 _WaterSandRockSediment_TexelSize;
 
+		float4 _Indicator;
+		float4 _IndicatorColor;
+		float _IndicatorSize;
+
 		void vert(inout appdata_full v) {
 			v.vertex.y = SampleHeightSand(_WaterSandRockSediment, v.texcoord);
 		}
@@ -46,6 +54,13 @@
 			// Color based on what's on top
 			float4 wsr = tex2D(_WaterSandRockSediment, IN.uv_WaterSandRockSediment);
 			float4 c = lerp(_RockColor, _SandColor, clamp(wsr.g * 5, 0, 1));
+
+			// Indicator
+			float amountInv = min(1, distance(IN.uv_WaterSandRockSediment, _Indicator.xy) / _IndicatorSize);
+			float amount = 1 - amountInv * amountInv;
+			c.rgb = lerp(c.rgb, _IndicatorColor, amount);
+
+			// Combine color
 			o.Albedo = c.rgb;
 
 			// Normal based on heights

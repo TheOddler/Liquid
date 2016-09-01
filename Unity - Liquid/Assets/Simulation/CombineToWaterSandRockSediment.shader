@@ -31,10 +31,10 @@
 			#include "UnityCG.cginc"
 
 			//sampler2D _MainTex;
-			sampler2D _Water;
-			sampler2D _Sand;
-			sampler2D _Rock;
-			sampler2D _Sediment;
+			sampler2D_float _Water;
+			sampler2D_float _Sand;
+			sampler2D_float _Rock;
+			sampler2D_float _Sediment;
 
 			float _WaterScale;
 			float _SandScale;

@@ -24,13 +24,13 @@ Material:
     - first:
         name: _Rock
       second:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 33a67d1e87a672c48a266f4e9ead898e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
         name: _Sand
       second:
-        m_Texture: {fileID: 2800000, guid: 248c766a14827a0498bc55e0ed3b868f, type: 3}
+        m_Texture: {fileID: 2800000, guid: efc26fdef13f5a14a8bf064ea88a78ed, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:

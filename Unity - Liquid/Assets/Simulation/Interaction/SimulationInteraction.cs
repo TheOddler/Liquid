@@ -25,6 +25,8 @@ public class SimulationInteraction : MonoBehaviour
 	Material _addSourceBrushMaterial;
 	MeshCollider _collider;
 	Texture2D _cashedHeightsTex = null;
+	[SerializeField]
+	SimVisManager _visManager;
 
 	void Start()
 	{
@@ -32,40 +34,36 @@ public class SimulationInteraction : MonoBehaviour
 		_collider = GetComponent<MeshCollider>();
 		
 		_cashedHeightsTex = new Texture2D(_sim.GridPixelCount, _sim.GridPixelCount, TextureFormat.RGBAFloat, false); //smaller?
-		StartCoroutine(UpdateCollider());
+		_cashedHeightsTex.SetPixel(0, 0, Color.red);
+
+		//StartCoroutine(UpdateCollider());
 	}
 
 	void Update()
 	{
-		bool addWater = Input.GetMouseButton(0);
-		bool addSand = Input.GetMouseButton(1);
-		if (addWater || addSand)
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hitInfo;
+		if (_collider.Raycast(ray, out hitInfo, float.PositiveInfinity))
 		{
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hitInfo;
-			if (_collider.Raycast(ray, out hitInfo, float.PositiveInfinity))
+			Vector2 hitPos = hitInfo.textureCoord;
+
+			// Adding
+			bool addWater = Input.GetMouseButton(0);
+			bool addSand = Input.GetMouseButton(1);
+			Vector4 amount = new Vector4(
+				addWater ? _addingSpeed : 0f, // water
+				addSand ? _addingSpeed : 0f, // sand
+				0, 0);
+
+			AddSource(_addingBrush, hitPos, amount * Time.deltaTime);
+
+			// Visualize
+			if (_visManager != null)
 			{
-				Vector2 hitPos = hitInfo.textureCoord;
-
-				Vector4 amount = new Vector4(
-					addWater ? _addingSpeed : 0f, // water
-					addSand ? _addingSpeed : 0f, // sand
-					0, 0);
-
-				AddSource(_addingBrush, hitPos, amount * Time.deltaTime);
-			}
-		}
-
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hitInfo;
-			if (_collider.Raycast(ray, out hitInfo, float.PositiveInfinity))
-			{
-				Vector2 hitPos = hitInfo.textureCoord;
-
-				Vector4 amount = new Vector4(20f, 20f, 0, 0);
-				AddSource(_addingBrush, hitPos, amount);
+				Vector2 fixedPos = hitPos;
+				//fixedPos.x = 1 - fixedPos.x;
+				fixedPos.y = 1 - fixedPos.y;
+				_visManager.UpdateIndicator(fixedPos);
 			}
 		}
 	}
@@ -99,10 +97,11 @@ public class SimulationInteraction : MonoBehaviour
 		while (true)
 		{
 			// Get height data
+			yield return new WaitForEndOfFrame();
 			var currentActiveRT = RenderTexture.active;
 			RenderTexture.active = _sim.CurrentWaterSandRockSediment;
 
-			_cashedHeightsTex.ReadPixels(new Rect(0, 0, _cashedHeightsTex.width, _cashedHeightsTex.height), 0, 0);
+			_cashedHeightsTex.ReadPixels(new Rect(0, 0, _cashedHeightsTex.width, _cashedHeightsTex.height), 0, 0, false);
 			_cashedHeightsTex.Apply();
 
 			RenderTexture.active = currentActiveRT;

@@ -131,6 +131,9 @@ Material:
         name: _HeightScale
       second: 3
     - first:
+        name: _IndicatorSize
+      second: 0.02
+    - first:
         name: _L
       second: 0.1
     - first:
@@ -168,8 +171,14 @@ Material:
         name: _EmissionColor
       second: {r: 0, g: 0, b: 0, a: 1}
     - first:
+        name: _Indicator
+      second: {r: 0, g: 0, b: 0, a: 0}
+    - first:
+        name: _IndicatorColor
+      second: {r: 0.53103447, g: 0, b: 1, a: 1}
+    - first:
         name: _RockColor
-      second: {r: 0.46323532, g: 0.31133023, b: 0.119214974, a: 1}
+      second: {r: 0.31617647, g: 0.20941558, b: 0.07439446, a: 1}
     - first:
         name: _SandColor
       second: {r: 0.77205884, g: 0.50645804, b: 0.17030707, a: 1}

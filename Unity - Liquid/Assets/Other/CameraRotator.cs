@@ -20,9 +20,8 @@ public class CameraRotator : MonoBehaviour
 		transform.Rotate(0, rot, 0);
 	}
 
-	void OnGUI()
+	public void SetAutoRotationSpeed(float speed)
 	{
-		GUI.Label(new Rect(10, 10, 300, 20), "Auto-rotate speed:");
-		_autoSpeed = GUI.HorizontalSlider(new Rect(10, 30, 100, 20), _autoSpeed, 0, 60);
+		_autoSpeed = speed;
 	}
 }
