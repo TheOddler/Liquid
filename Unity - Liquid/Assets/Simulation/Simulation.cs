@@ -26,6 +26,8 @@ public class Simulation : MonoBehaviour
 	[Header("Sand Settings")]
 	[SerializeField]
 	float _sandBlurPerSecond = 10.0f;
+	[SerializeField]
+	float _sandBlurAtStartSigma = 7.0f;
 
 	[Header("Erosion Settings")]
 	[SerializeField]
@@ -43,6 +45,10 @@ public class Simulation : MonoBehaviour
 	[SerializeField]
 	Material _initialHeights;
 
+	[Header("Performace")]
+	[SerializeField]
+	int _maxSimStepsPerFrame = 5;
+
 	//
 	// Schaders
 	// ---
@@ -57,6 +63,8 @@ public class Simulation : MonoBehaviour
 	Shader _updateErosionDepositionShader;
 	[SerializeField]
 	Shader _updateSedimentTransportationShader;
+	[SerializeField]
+	Shader _blurSandShader;
 
 	//
 	// Materials
@@ -66,6 +74,7 @@ public class Simulation : MonoBehaviour
 	Material _updateVelocityFieldMaterial;
 	Material _updateErosionDepositionMaterial;
 	Material _updateSedimentTransportationMaterial;
+	Material _blurSandMaterial;
 
 	//
 	// Textures
@@ -104,6 +113,7 @@ public class Simulation : MonoBehaviour
 		_updateVelocityFieldMaterial = new Material(_updateVelocityFieldShader);
 		_updateErosionDepositionMaterial = new Material(_updateErosionDepositionShader);
 		_updateSedimentTransportationMaterial = new Material(_updateSedimentTransportationShader);
+		_blurSandMaterial = new Material(_blurSandShader);
 
 		// Create textures
 		var format = RenderTextureFormat.ARGBFloat;
@@ -113,6 +123,9 @@ public class Simulation : MonoBehaviour
 		_outflowFluxRLBT = new BufferedRenderTexture(_gridPixelCount, _gridPixelCount, 0, format, readWrite, Texture2D.blackTexture);
 		_velocityXY = new BufferedRenderTexture(_gridPixelCount, _gridPixelCount, 0, format, readWrite, Texture2D.blackTexture);
 
+		// Do sand blur at start once
+		BlurSandOnce();
+
 		// Start first simulation step
 		_nextUpdate = Time.time;
 	}
@@ -121,7 +134,7 @@ public class Simulation : MonoBehaviour
 	{
 		int iter = 0;
 		if (OnBeforeSimFrame != null) OnBeforeSimFrame();
-		while (Time.time >= _nextUpdate)
+		while (Time.time >= _nextUpdate && iter < _maxSimStepsPerFrame)
 		{
 			UpdateSimulation();
 			_nextUpdate += _updateInterval;
@@ -215,6 +228,18 @@ public class Simulation : MonoBehaviour
 
 		// Do the step
 		Graphics.Blit(_waterSandRockSediment.Texture, _waterSandRockSediment.Buffer, _updateSedimentTransportationMaterial);
+
+		// Finalize
+		_waterSandRockSediment.Swap();
+	}
+
+	void BlurSandOnce()
+	{
+		// Set values
+		_blurSandMaterial.SetFloat("_Sigma", _sandBlurAtStartSigma);
+
+		// Do the step
+		Graphics.Blit(_waterSandRockSediment.Texture, _waterSandRockSediment.Buffer, _blurSandMaterial);
 
 		// Finalize
 		_waterSandRockSediment.Swap();

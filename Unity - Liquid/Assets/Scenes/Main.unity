@@ -320,8 +320,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 291421887}
-  m_LocalRotation: {x: -0.47482303, y: 0.30080616, z: 0.1767764, w: 0.80796593}
-  m_LocalPosition: {x: -8.720158, y: -19.478, z: -8.313752}
+  m_LocalRotation: {x: -0.09943978, y: 0.86607206, z: 0.4512267, w: 0.19085452}
+  m_LocalPosition: {x: -7.9231873, y: -24.055662, z: 18.527042}
   m_LocalScale: {x: 0.049999997, y: 0.05, z: 0.05}
   m_Children: []
   m_Father: {fileID: 1278731425}
@@ -1007,7 +1007,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1272543327}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d85425050d15a4d4ca436982ad50881a, type: 3}
   m_Name: 
@@ -1041,17 +1041,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5731f178b19821f4d920c14e89572a7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gridPixelCount: 1024
-  _updateInterval: 0.01
-  _gridPixelSize: 0.1
+  _gridPixelCount: 512
+  _updateInterval: 0.02
+  _gridPixelSize: 0.2
   _pipeCrossSectionArea: 0.1
   _gravityConstant: 9.81
-  _sandBlurPerSecond: 0.05
+  _sandBlurPerSecond: 0
+  _sandBlurAtStartSigma: 5
   _sedimentCapacityConstant: 1
   _dissolvingConstant: 0.01
   _depositionConstant: 0.005
   _erosionMinimumAngleThresshold: 0.02
   _initialHeights: {fileID: 2100000, guid: ad549bb2586c9214a90a5f0f4fd48e14, type: 2}
+  _maxSimStepsPerFrame: 5
   _updateOutflowFluxShader: {fileID: 4800000, guid: ab2c081750de0dc40a4f9b70c101dde3,
     type: 3}
   _updateHeightsShader: {fileID: 4800000, guid: e7130fdc699ff1748af29233a5f365e4,
@@ -1062,6 +1064,7 @@ MonoBehaviour:
     type: 3}
   _updateSedimentTransportationShader: {fileID: 4800000, guid: 3ba2fb5b00e30b04b8552e6e4eef2786,
     type: 3}
+  _blurSandShader: {fileID: 4800000, guid: bbe74fac5a6af964b8ef0e7d1f4e4ec9, type: 3}
 --- !u!4 &1278731425
 Transform:
   m_ObjectHideFlags: 0
